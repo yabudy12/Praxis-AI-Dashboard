@@ -1,0 +1,2827 @@
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Praxis AI - Market Analysis Dashboard v8.2</title>
+    
+    <!-- Firebase Initialization -->
+    <script>
+        (function(firebaseConfig, initialAuthToken, appId) {
+            window.__firebase_config = firebaseConfig;
+            window.__initial_auth_token = initialAuthToken;
+            window.__app_id = appId;
+        })("{\n  \"apiKey\": \"AIzaSyBBzf7fRpVXG6tpOvmkW6vgdeGMp22par0\",\n  \"authDomain\": \"project-sentinel-command-14e19.firebaseapp.com\",\n  \"projectId\": \"project-sentinel-command-14e19\",\n  \"storageBucket\": \"project-sentinel-command-14e19.firebasestorage.app\",\n  \"messagingSenderId\": \"200118381577\",\n  \"appId\": \"1:200118381577:web:43a1cd98d8c85c3eb1dcd8\",\n  \"measurementId\": \"G-1T65QCYC4K\"\n}","");
+    </script>
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Google Fonts: Inter and Assistant -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;700&amp;family=Inter:wght@300;400;700&amp;display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js for charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js" crossorigin="anonymous"></script>
+    
+    <!-- Libraries for PDF and PNG export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous"></script>
+    
+    <!-- React and ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin="anonymous"></script>
+    
+    <!-- Babel Standalone for in-browser JSX transpilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin="anonymous"></script>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot, collection, query, addDoc, getDocs, updateDoc, orderBy, limit, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Expose Firebase modules globally for use in the Babel script
+        window.firebase = { initializeApp, getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, getFirestore, doc, getDoc, setDoc, onSnapshot, collection, query, addDoc, getDocs, updateDoc, orderBy, limit, deleteDoc };
+    </script>
+    
+    <!-- Embedded Data -->
+    <script id="gics-data" type="application/json">
+    [
+        {"Sector":"Industrials","Industry":"Aerospace & Defense","Ticker":"SPR","Name":"Spirit AeroSystems"},
+        {"Sector":"Industrials","Industry":"Aerospace & Defense","Ticker":"TDG","Name":"TransDigm Group"},
+        {"Sector":"Industrials","Industry":"Aerospace & Defense","Ticker":"TXT","Name":"Textron"},
+        {"Sector":"Industrials","Industry":"Airlines","Ticker":"AAL","Name":"American Airlines Group"},
+        {"Sector":"Industrials","Industry":"Airlines","Ticker":"ALK","Name":"Alaska Air Group"},
+        {"Sector":"Industrials","Industry":"Airlines","Ticker":"DAL","Name":"Delta Air Lines"},
+        {"Sector":"Industrials","Industry":"Airlines","Ticker":"LUV","Name":"Southwest Airlines"},
+        {"Sector":"Industrials","Industry":"Airlines","Ticker":"UAL","Name":"United Airlines Holdings"},
+        {"Sector":"Industrials","Industry":"Building Products","Ticker":"AOS","Name":"A. O. Smith"},
+        {"Sector":"Industrials","Industry":"Building Products","Ticker":"BLD","Name":"TopBuild"},
+        {"Sector":"Industrials","Industry":"Building Products","Ticker":"CARR","Name":"Carrier Global"},
+        {"Sector":"Industrials","Industry":"Building Products","Ticker":"DOOR","Name":"Masonite International"},
+        {"Sector":"Industrials","Industry":"Building Products","Ticker":"FBHS","Name":"Fortune Brands Home & Security"},
+        {"Sector":"Industrials","Industry":"Building Products","Ticker":"JCI","Name":"Johnson Controls"},
+        {"Sector":"Industrials","Industry":"Building Products","Ticker":"LII","Name":"Lennox International"},
+        {"Sector":"Industrials","Industry":"Building Products","Ticker":"MAS","Name":"Masco"},
+        {"Sector":"Industrials","Industry":"Building Products","Ticker":"OC","Name":"Owens Corning"},
+        {"Sector":"Industrials","Industry":"Building Products","Ticker":"POOL","Name":"Pool Corporation"},
+        {"Sector":"Industrials","Industry":"Building Products","Ticker":"TT","Name":"Trane Technologies"},
+        {"Sector":"Industrials","Industry":"Building Products","Ticker":"VMC","Name":"Vulcan Materials"},
+        {"Sector":"Industrials","Industry":"Construction & Engineering","Ticker":"J","Name":"Jacobs Engineering Group"},
+        {"Sector":"Industrials","Industry":"Construction & Engineering","Ticker":"PWR","Name":"Quanta Services"},
+        {"Sector":"Industrials","Industry":"Electrical Equipment","Ticker":"AME","Name":"Ametek"},
+        {"Sector":"Industrials","Industry":"Electrical Equipment","Ticker":"EMR","Name":"Emerson Electric"},
+        {"Sector":"Industrials","Industry":"Electrical Equipment","Ticker":"ETN","Name":"Eaton Corporation"},
+        {"Sector":"Industrials","Industry":"Electrical Equipment","Ticker":"FSLR","Name":"First Solar"},
+        {"Sector":"Industrials","Industry":"Electrical Equipment","Ticker":"GNRC","Name":"Generac Holdings"},
+        {"Sector":"Industrials","Industry":"Electrical Equipment","Ticker":"HUBB","Name":"Hubbell Inc."},
+        {"Sector":"Industrials","Industry":"Electrical Equipment","Ticker":"ROP","Name":"Roper Technologies"},
+        {"Sector":"Industrials","Industry":"Industrial Conglomerates","Ticker":"GE","Name":"General Electric"},
+        {"Sector":"Industrials","Industry":"Industrial Conglomerates","Ticker":"HON","Name":"Honeywell"},
+        {"Sector":"Industrials","Industry":"Industrial Conglomerates","Ticker":"MMM","Name":"3M"},
+        {"Sector":"Industrials","Industry":"Industrial Machinery","Ticker":"CAT","Name":"Caterpillar Inc."},
+        {"Sector":"Industrials","Industry":"Industrial Machinery","Ticker":"CMI","Name":"Cummins"},
+        {"Sector":"Industrials","Industry":"Industrial Machinery","Ticker":"DE","Name":"Deere & Company"},
+        {"Sector":"Industrials","Industry":"Industrial Machinery","Ticker":"DOV","Name":"Dover Corporation"},
+        {"Sector":"Industrials","Industry":"Industrial Machinery","Ticker":"GWW","Name":"W. W. Grainger"},
+        {"Sector":"Industrials","Industry":"Industrial Machinery","Ticker":"IR","Name":"Ingersoll Rand"},
+        {"Sector":"Industrials","Industry":"Industrial Machinery","Ticker":"ITW","Name":"Illinois Tool Works"},
+        {"Sector":"Industrials","Industry":"Industrial Machinery","Ticker":"PCAR","Name":"Paccar"},
+        {"Sector":"Industrials","Industry":"Industrial Machinery","Ticker":"PH","Name":"Parker-Hannifin"},
+        {"Sector":"Industrials","Industry":"Industrial Machinery","Ticker":"PNR","Name":"Pentair"},
+        {"Sector":"Industrials","Industry":"Industrial Machinery","Ticker":"SNA","Name":"Snap-on"},
+        {"Sector":"Industrials","Industry":"Industrial Machinery","Ticker":"SWK","Name":"Stanley Black & Decker"},
+        {"Sector":"Industrials","Industry":"Industrial Machinery","Ticker":"XYL","Name":"Xylem Inc."},
+        {"Sector":"Industrials","Industry":"Professional Services","Ticker":"ACN","Name":"Accenture"},
+        {"Sector":"Industrials","Industry":"Professional Services","Ticker":"ADS","Name":"Alliance Data Systems"},
+        {"Sector":"Industrials","Industry":"Professional Services","Ticker":"CTLT","Name":"Catalent"},
+        {"Sector":"Industrials","Industry":"Professional Services","Ticker":"PAYX","Name":"Paychex"},
+        {"Sector":"Industrials","Industry":"Professional Services","Ticker":"V","Name":"Visa Inc."},
+        {"Sector":"Industrials","Industry":"Road & Rail","Ticker":"CHRW","Name":"C.H. Robinson"},
+        {"Sector":"Industrials","Industry":"Road & Rail","Ticker":"CSX","Name":"CSX Corporation"},
+        {"Sector":"Industrials","Industry":"Road & Rail","Ticker":"JBHT","Name":"J.B. Hunt"},
+        {"Sector":"Industrials","Industry":"Road & Rail","Ticker":"NSC","Name":"Norfolk Southern"},
+        {"Sector":"Industrials","Industry":"Road & Rail","Ticker":"ODFL","Name":"Old Dominion Freight Line"},
+        {"Sector":"Industrials","Industry":"Road & Rail","Ticker":"UNP","Name":"Union Pacific"},
+        {"Sector":"Industrials","Industry":"Trading Companies & Distributors","Ticker":"FAST","Name":"Fastenal"},
+        {"Sector":"Industrials","Industry":"Trading Companies & Distributors","Ticker":"URI","Name":"United Rentals"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"ACIW","Name":"ACI Worldwide"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"ADP","Name":"ADP"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"AKAM","Name":"Akamai"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"ANSS","Name":"Ansys"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"AVGO","Name":"Broadcom Inc."},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"BR","Name":"Broadridge Financial Solutions"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"CDNS","Name":"Cadence Design Systems"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"CTSH","Name":"Cognizant"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"DXC","Name":"DXC Technology"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"EPAM","Name":"EPAM Systems"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"FFIV","Name":"F5 Networks"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"FIS","Name":"FIS"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"FISV","Name":"Fiserv"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"GPN","Name":"Global Payments"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"IBM","Name":"IBM"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"JKHY","Name":"Jack Henry & Associates"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"MA","Name":"Mastercard"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"MSI","Name":"Motorola Solutions"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"NOW","Name":"ServiceNow"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"PAYC","Name":"Paycom"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"SNPS","Name":"Synopsys"},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"TRMB","Name":"Trimble Inc."},
+        {"Sector":"Information Technology","Industry":"IT Services","Ticker":"VRSN","Name":"Verisign"},
+        {"Sector":"Information Technology","Industry":"Semiconductors & Semiconductor Equipment","Ticker":"ADI","Name":"Analog Devices"},
+        {"Sector":"Information Technology","Industry":"Semiconductors & Semiconductor Equipment","Ticker":"AMAT","Name":"Applied Materials"},
+        {"Sector":"Information Technology","Industry":"Semiconductors & Semiconductor Equipment","Ticker":"AMD","Name":"AMD"},
+        {"Sector":"Information Technology","Industry":"Semiconductors & Semiconductor Equipment","Ticker":"INTC","Name":"Intel"},
+        {"Sector":"Information Technology","Industry":"Semiconductors & Semiconductor Equipment","Ticker":"KLAC","Name":"KLA Corporation"},
+        {"Sector":"Information Technology","Industry":"Semiconductors & Semiconductor Equipment","Ticker":"LRCX","Name":"Lam Research"},
+        {"Sector":"Information Technology","Industry":"Semiconductors & Semiconductor Equipment","Ticker":"MCHP","Name":"Microchip Technology"},
+        {"Sector":"Information Technology","Industry":"Semiconductors & Semiconductor Equipment","Ticker":"MU","Name":"Micron Technology"},
+        {"Sector":"Information Technology","Industry":"Semiconductors & Semiconductor Equipment","Ticker":"QCOM","Name":"Qualcomm"},
+        {"Sector":"Information Technology","Industry":"Semiconductors & Semiconductor Equipment","Ticker":"SWKS","Name":"Skyworks Solutions"},
+        {"Sector":"Information Technology","Industry":"Semiconductors & Semiconductor Equipment","Ticker":"TER","Name":"Teradyne"},
+        {"Sector":"Information Technology","Industry":"Semiconductors & Semiconductor Equipment","Ticker":"TXN","Name":"Texas Instruments"},
+        {"Sector":"Information Technology","Industry":"Software","Ticker":"ADBE","Name":"Adobe Inc."},
+        {"Sector":"Information Technology","Industry":"Software","Ticker":"ADSK","Name":"Autodesk"},
+        {"Sector":"Information Technology","Industry":"Software","Ticker":"CDW","Name":"CDW"},
+        {"Sector":"Information Technology","Industry":"Software","Ticker":"CRM","Name":"Salesforce"},
+        {"Sector":"Information Technology","Industry":"Software","Ticker":"INTU","Name":"Intuit"},
+        {"Sector":"Information Technology","Industry":"Software","Ticker":"MSFT","Name":"Microsoft"},
+        {"Sector":"Information Technology","Industry":"Software","Ticker":"ORCL","Name":"Oracle"},
+        {"Sector":"Information Technology","Industry":"Software","Ticker":"PTC","Name":"PTC"},
+        {"Sector":"Information Technology","Industry":"Software","Ticker":"RHT","Name":"Red Hat"},
+        {"Sector":"Information Technology","Industry":"Software","Ticker":"SAP","Name":"SAP"},
+        {"Sector":"Information Technology","Industry":"Software","Ticker":"VMW","Name":"VMware"},
+        {"Sector":"Health Care","Industry":"Biotechnology","Ticker":"AMGN","Name":"Amgen"},
+        {"Sector":"Health Care","Industry":"Biotechnology","Ticker":"BIIB","Name":"Biogen"},
+        {"Sector":"Health Care","Industry":"Biotechnology","Ticker":"GILD","Name":"Gilead Sciences"},
+        {"Sector":"Health Care","Industry":"Biotechnology","Ticker":"REGN","Name":"Regeneron Pharmaceuticals"},
+        {"Sector":"Health Care","Industry":"Biotechnology","Ticker":"VRTX","Name":"Vertex Pharmaceuticals"},
+        {"Sector":"Health Care","Industry":"Health Care Equipment & Supplies","Ticker":"A","Name":"Agilent Technologies"},
+        {"Sector":"Health Care","Industry":"Health Care Equipment & Supplies","Ticker":"ABT","Name":"Abbott Laboratories"},
+        {"Sector":"Health Care","Industry":"Health Care Equipment & Supplies","Ticker":"BAX","Name":"Baxter International"},
+        {"Sector":"Health Care","Industry":"Health Care Equipment & Supplies","Ticker":"BDX","Name":"Becton Dickinson"},
+        {"Sector":"Health Care","Industry":"Health Care Equipment & Supplies","Ticker":"BSX","Name":"Boston Scientific"},
+        {"Sector":"Health Care","Industry":"Health Care Equipment & Supplies","Ticker":"COO","Name":"CooperCompanies"},
+        {"Sector":"Health Care","Industry":"Health Care Equipment & Supplies","Ticker":"DHR","Name":"Danaher Corporation"},
+        {"Sector":"Health Care","Industry":"Health Care Equipment & Supplies","Ticker":"EW","Name":"Edwards Lifesciences"},
+        {"Sector":"Health Care","Industry":"Health Care Equipment & Supplies","Ticker":"HOLX","Name":"Hologic"},
+        {"Sector":"Health Care","Industry":"Health Care Equipment & Supplies","Ticker":"IDXX","Name":"Idexx Laboratories"},
+        {"Sector":"Health Care","Industry":"Health Care Equipment & Supplies","Ticker":"ILMN","Name":"Illumina, Inc."},
+        {"Sector":"Health Care","Industry":"Health Care Equipment & Supplies","Ticker":"ISRG","Name":"Intuitive Surgical"},
+        {"Sector":"Health Care","Industry":"Health Care Equipment & Supplies","Ticker":"MDT","Name":"Medtronic"},
+        {"Sector":"Health Care","Industry":"Health Care Equipment & Supplies","Ticker":"PKI","Name":"PerkinElmer"},
+        {"Sector":"Health Care","Industry":"Health Care Equipment & Supplies","Ticker":"STE","Name":"Steris"},
+        {"Sector":"Health Care","Industry":"Health Care Equipment & Supplies","Ticker":"SYK","Name":"Stryker Corporation"},
+        {"Sector":"Health Care","Industry":"Health Care Equipment & Supplies","Ticker":"TFX","Name":"Teleflex"},
+        {"Sector":"Health Care","Industry":"Health Care Equipment & Supplies","Ticker":"TMO","Name":"Thermo Fisher Scientific"},
+        {"Sector":"Health Care","Industry":"Health Care Equipment & Supplies","Ticker":"WAT","Name":"Waters Corporation"},
+        {"Sector":"Health Care","Industry":"Health Care Equipment & Supplies","Ticker":"ZBH","Name":"Zimmer Biomet"}
+    ]
+    </script>
+    <script id="param-data" type="text/csv">
+"Full Parameter Name","Short Parameter Name","Definition","What to Write","Unit of Measure","Why Check This Parameter","How to Find the Data","Possible Cases and Scenarios","Technical Meaning/Signal","Recommended Action/Response","Essential Examples and Notes"
+Stock Name,Stock Name,"The full name of the security/fund/stock.","The full name of the security/fund/stock.","Text","Certain identification, tracking, and balance sheet in your stock trading map.","On stock exchange websites, Google, company website.","Ensure trading the correct security.","Certain identification of the asset/company.","Full or abbreviated name in English.","iShares Bitcoin Trust"
+Ticker,Ticker,"The trading symbol of the stock in the capital market.","A short identification code (usually 3-5 letters) that identifies the security on the stock exchange.","Text","Certain identification, tracking, and balance sheet in your stock trading map.","In any trading system, stock exchange websites.","Ensure trading the correct security.","Quick and accurate identification for trading and analysis.","International symbol.","IBIT"
+InitialPortfolioValue,InitialPortfolioValue,"The starting value of your investment portfolio.","Enter the total value of your portfolio at the beginning of the tracking period.","Numeric","To establish a baseline for performance measurement.","Your brokerage account statement.","N/A","Baseline for ROI calculation.","Ensure accuracy for meaningful analysis.","e.g., 10000"
+CurrentPortfolioValue,CurrentPortfolioValue,"The current market value of your investment portfolio.","Update this value regularly to reflect market changes.","Numeric","To track real-time performance and growth.","Your brokerage account dashboard.","Value can fluctuate.","Indicates profit or loss against the initial value.","Monitor for significant changes.","e.g., 12500"
+Sector,Sector,"The economic sector the company belongs to.","Select from the dropdown list.","Text","To understand the broader economic context of the stock.","Based on GICS classification.","N/A","Helps in diversification and sector-based analysis.","Ensure correct classification.","e.g., Information Technology"
+Industry,Industry,"The specific industry group within the sector.","Select from the dropdown, filtered by Sector.","Text","For more granular analysis of the company's peers and specific market.","Based on GICS classification.","N/A","Compares the stock to its direct competitors.","Ensure correct classification.","e.g., Application Software"
+CurrentPrice,CurrentPrice,"The latest trading price of the stock.","Enter the current market price.","Numeric","The most fundamental piece of data for all technical calculations.","Live from your trading platform or financial websites.","Constantly changing during market hours.","The basis for all price-based indicators.","Update frequently for active trades.","e.g., 150.75"
+RSI,RSI,"Relative Strength Index (14).","Enter the 14-day RSI value.","Numeric (0-100)","To measure momentum and identify overbought/oversold conditions.","On any charting platform under 'Indicators'.","Above 70 is overbought, below 30 is oversold.","High RSI suggests potential reversal down; Low RSI suggests potential reversal up.","Combine with other signals; don't use in isolation.","e.g., 65.4"
+RiskRewardRatio,RiskRewardRatio,"The ratio between the potential profit of a trade and its potential loss.","Calculated automatically based on Entry, Stop Loss, and TP1.","Ratio","To ensure that the potential reward justifies the risk.","Auto-calculated.","A ratio > 2 is generally considered favorable.","A high ratio indicates a good potential return for the risk taken.","Aim for trades with a high Risk/Reward ratio.","e.g., 1:3"
+    </script>
+    
+    <!-- Custom CSS for theme and layout -->
+    <style>
+        :root {
+            --bg-color: #1a202c;
+            --text-color: #e2e8f0;
+            --secondary-text-color: #a0aec0;
+            --card-bg: #2d3748;
+            --accent-color-1: #667eea;
+            --accent-color-2: #00bcd4;
+            --accent-color-3: #f6ad55;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --box-shadow-color: rgba(0, 0, 0, 0.4);
+            --green-indicator: #4ade80;
+            --red-indicator: #f87171;
+            --yellow-indicator: #facc15;
+        }
+
+        body {
+            font-family: 'Inter', 'Assistant', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .dashboard-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px var(--box-shadow-color);
+        }
+        
+        .section-group-title {
+            font-size: 1.6em;
+            color: var(--accent-color-2);
+            font-weight: 700;
+            border-bottom: 2px solid var(--accent-color-1);
+            text-align: left;
+        }
+
+        .section-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .info-section {
+            background-color: rgba(45, 55, 72, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+        }
+        
+        .icon-container {
+            font-size: 1.8em;
+            color: var(--accent-color-1);
+        }
+
+        .text-content h3 {
+            font-size: 1.2em;
+            color: var(--accent-color-3);
+            font-weight: 700;
+            text-align: left;
+        }
+        
+        .info-row {
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-row .label {
+            color: var(--secondary-text-color);
+            font-size: 0.9em;
+        }
+        
+        .info-row input, .info-row select, .info-row textarea {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            color: var(--text-color);
+            direction: ltr;
+            text-align: left;
+        }
+        
+        .info-row input[readonly] {
+            background-color: rgba(0, 0, 0, 0.2);
+            color: var(--accent-color-2);
+            font-weight: bold;
+            cursor: not-allowed;
+        }
+
+        .info-row input:focus, .info-row select:focus, .info-row textarea:focus {
+            outline: none;
+            border-color: var(--accent-color-1);
+            box-shadow: 0 0 5px var(--accent-color-1);
+        }
+        
+        .autocomplete-dropdown {
+            position: absolute;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            z-index: 1000;
+            text-align: left;
+        }
+
+        .autocomplete-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .ai-analysis-section {
+            background: linear-gradient(145deg, rgba(45, 55, 72, 0.5), rgba(26, 32, 44, 0.5));
+            border: 1px solid var(--accent-color-1);
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.2);
+        }
+        .ai-analysis-output {
+            background-color: rgba(0,0,0,0.2);
+        }
+        .ai-analysis-output.loading::after {
+            content: 'Analyzing Data...';
+            color: var(--accent-color-2);
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        
+        /* Modal Styles */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            width: 90%;
+            max-width: 800px; /* Increased width for training center */
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .indicator-green { color: var(--green-indicator); }
+        .indicator-red { color: var(--red-indicator); }
+        .indicator-yellow { color: var(--yellow-indicator); }
+
+        /* Tab Styles */
+        .tabs-container {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+            color: var(--secondary-text-color);
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            border-bottom: 3px solid transparent;
+        }
+        .tab-button.active {
+            color: var(--accent-color-2);
+            border-bottom: 3px solid var(--accent-color-2);
+        }
+        .tab-button:hover {
+            color: var(--text-color);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+    </style>
+</head>
+<body class="min-h-screen p-4 sm:p-6 md:p-8 flex flex-col items-center">
+    <div id="root"></div>
+
+    <script type="text/babel" data-presets="react" data-plugins="transform-modules-umd">
+        // Access React, ReactDOM and other globals
+        const { React, ReactDOM, firebase, Chart, html2canvas, jspdf } = window;
+        const { useState, useEffect, createContext, useContext, useCallback, useRef, useMemo } = React;
+        const { createRoot } = ReactDOM;
+
+        //======================================================================
+        //  1. DATABASE & MOCK DATA
+        //======================================================================
+        const APP_VERSION = "8.1";
+        const initialGicsData = JSON.parse(document.getElementById('gics-data').textContent || '[]');
+        
+        const paramDataElement = document.getElementById('param-data');
+        const paramCSV = paramDataElement.textContent;
+        const paramData = paramCSV.split('\n').slice(1)
+            .filter(line => line && line.trim() !== '')
+            .reduce((acc, line) => {
+                const values = line.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g).map(v => v.replace(/"/g, ''));
+                const key = values[1]; 
+                if (key) {
+                    acc[key.trim()] = {
+                        fullName: values[0],
+                        definition: values[2],
+                        usage: values[5],
+                        howTo: values[6]
+                    };
+                }
+                return acc;
+            }, {});
+
+
+        const generateMockPortfolioData = () => {
+            const data = [];
+            let value = 13732;
+            for (let i = 90; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                value += (Math.random() - 0.48) * 250;
+                data.push({ time: date.toISOString().split('T')[0], value: value });
+            }
+            return data;
+        };
+
+        //======================================================================
+        //  2. CONTEXTS (State Management)
+        //======================================================================
+        const DataContext = createContext();
+        const FirebaseContext = createContext();
+        
+        const useData = () => useContext(DataContext);
+        const useFirebase = () => useContext(FirebaseContext);
+
+        //======================================================================
+        //  3. DATA PROVIDER COMPONENT
+        //======================================================================
+        const DataProvider = ({ children }) => {
+            const [currentDateTime, setCurrentDateTime] = useState('');
+            const [changeDescription, setChangeDescription] = useState('');
+            const [isDataDirty, setIsDataDirty] = useState(false);
+            const [apiStatus, setApiStatus] = useState({ loading: false, error: null });
+            const [tradeLog, setTradeLog] = useState([]);
+            const [currentTradeId, setCurrentTradeId] = useState(null);
+            const [globalFilter, setGlobalFilter] = useState('All');
+            const [globalSearchQuery, setGlobalSearchQuery] = useState('');
+            const [gicsDatabase, setGicsDatabase] = useState(initialGicsData);
+            const [isLiveDataSet, setIsLiveDataSet] = useState(false);
+            const [dataEntryMode, setDataEntryMode] = useState('manual');
+
+            const initialData = {
+                section1: {
+                    initialPortfolioValueILS: 10000,
+                    initialUSDRate: 3.70,
+                    initialPortfolioValueUSD: '0.00',
+                    currentPortfolioValueILS: 13732,
+                    currentUSDRate: 3.75,
+                    currentPortfolioValueUSD: '0.00',
+                    balanceUSD: 86.09,
+                    balanceILS: -108.07,
+                    creditLimit: 0,
+                    buyingPowerUSD: 49.92,
+                    dailyPLUSD: -245,
+                    totalPLUSD: '0.00',
+                    totalPLPercentage: '0.00'
+                },
+                section2: {
+                    stockName: '', tickerSymbol: '', sector: '', industry: '', exchange: '', securityType: 'Stock', marketCap: '',
+                },
+                section3: {
+                    currentPrice: 0, dailyRange: '', prevDayRange: '', currentVolume: '', avgVolume: '', unusualVolume: '',
+                },
+                section4: {
+                    supportLevels: '', resistanceLevels: '', ma20: 0, ma50: 0, ma100: 0, ma150: 0, ma200: 0, maMeaning: '', maAction: '',
+                    macd: 0, macdSignal: 0, macdHistogram: 0, macdMeaning: '', macdAction: '', rsi: 0, dailyRange: 0, atr: 0, atrPercent: 0,
+                    volatilityIndicator: '', vwap: 0,
+                },
+                section5: {
+                    dailyPivot: 0, priceVsPivot: '', pivotAction: '', fib236: 0, fib382: 0, fibGoldenPocket: '', fib786: 0, priceAction: '',
+                },
+                section6: {
+                    revenue: '', eps: 0, peRatio: 0, pbRatio: 0, growth: '', debt: '', dividend: '', analystForecasts: '',
+                },
+                section7: {
+                    institutionalSentiment: '', shortInterest: '', materialNews: '', marketRisk: '', externalRisks: '', successChance: '', riskLevel: '',
+                },
+                section8: {
+                    step1: { details: '', status: 'Open', purchaseDate: '', targetDate: '', entryPrice: 0, currentPrice: 0, stopLoss: 0, trailingStop: '', units: 0 },
+                    step2: { potentialRiskUnit: '0.00', financialRisk: '0.00', sharesToPurchase: 0, totalCost: '0.00', remainingBalance: '0.00' },
+                    step3: { tp1: 0, tp2: 0, tp3: 0, tp4: 0, profitPotential1: '0.00', riskRewardRatio: '', forecast: '' },
+                    step4: { closeDate: '', closePrice: '', fees: '', financialResult: '', roi: '' },
+                    step5: { news: '', sentiment: '', volatility: '', marketRisk: '', notes: '', alerts: '', chartSnapshots: '', followedPlan: '', lessonsLearned: '' }
+                },
+                portfolioHistory: generateMockPortfolioData(),
+            };
+            
+            const [data, setData] = useState(initialData);
+
+            useEffect(() => {
+                const updateDateTime = () => {
+                    const now = new Date();
+                    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+                    setCurrentDateTime(now.toLocaleString('en-US', options));
+                };
+                updateDateTime();
+                const intervalId = setInterval(updateDateTime, 1000);
+                return () => clearInterval(intervalId);
+            }, []);
+
+            const handleNestedChange = (path, value) => {
+                setIsDataDirty(true);
+                setData(prevData => {
+                    const newData = JSON.parse(JSON.stringify(prevData));
+                    let current = newData;
+                    const keys = path.split('.');
+                    for (let i = 0; i < keys.length - 1; i++) {
+                        current = current[keys[i]];
+                    }
+                    current[keys[keys.length - 1]] = value;
+                    return newData;
+                });
+            };
+            
+            const populateDashboardData = useCallback((importedData, markAsDirty = false) => {
+                if (importedData) {
+                    setData(prevData => ({...prevData, ...importedData}));
+                    if (markAsDirty) {
+                        setIsDataDirty(true);
+                    }
+                }
+            }, []);
+            
+
+            const loadTrade = (tradeData) => {
+                setData(tradeData.data);
+                setCurrentTradeId(tradeData.id);
+                setIsDataDirty(false);
+                setIsLiveDataSet(!!tradeData.data.section3.currentPrice);
+            };
+
+            const newTrade = () => {
+                setData(initialData);
+                setCurrentTradeId(null);
+                setIsDataDirty(false);
+                setIsLiveDataSet(false);
+                setDataEntryMode('manual');
+            };
+
+            const value = {
+                currentDateTime, changeDescription, setChangeDescription, isDataDirty, setIsDataDirty,
+                data, setData, handleNestedChange, populateDashboardData, 
+                apiStatus, setApiStatus,
+                tradeLog, setTradeLog,
+                currentTradeId, setCurrentTradeId,
+                loadTrade, newTrade, initialData,
+                globalFilter, setGlobalFilter, globalSearchQuery, setGlobalSearchQuery,
+                gicsDatabase, setGicsDatabase,
+                isLiveDataSet, setIsLiveDataSet,
+                dataEntryMode, setDataEntryMode
+            };
+
+            return (
+                <DataContext.Provider value={value}>
+                    {children}
+                </DataContext.Provider>
+            );
+        };
+        
+        //======================================================================
+        //  4. FIREBASE & UTILS PROVIDER COMPONENT
+        //======================================================================
+        const FirebaseProvider = ({ children }) => {
+            const { data, isDataDirty, setIsDataDirty, setTradeLog, currentTradeId, setCurrentTradeId, changeDescription, setChangeDescription, populateDashboardData, loadTrade } = useData();
+
+            const [db, setDb] = useState(null);
+            const [userId, setUserId] = useState('Loading...');
+            const [isAuthReady, setIsAuthReady] = useState(false);
+            
+            useEffect(() => {
+                const initFirebase = async () => {
+                    try {
+                        const firebaseConfig = JSON.parse(typeof window.__firebase_config !== 'undefined' ? window.__firebase_config : '{}');
+                        const app = firebase.initializeApp(firebaseConfig);
+                        const authInstance = firebase.getAuth(app);
+                        const dbInstance = firebase.getFirestore(app);
+                        setDb(dbInstance);
+
+                        firebase.onAuthStateChanged(authInstance, async (user) => {
+                            if (user) {
+                                setUserId(user.uid);
+                                setIsAuthReady(true);
+                            } else {
+                                try {
+                                    if (typeof window.__initial_auth_token !== 'undefined' && window.__initial_auth_token) {
+                                        await firebase.signInWithCustomToken(authInstance, window.__initial_auth_token);
+                                    } else {
+                                        await firebase.signInAnonymously(authInstance);
+                                    }
+                                } catch (error) {
+                                    console.error("Firebase sign-in error:", error);
+                                }
+                            }
+                        });
+                    } catch (error) {
+                        console.error("Firebase init error:", error);
+                    }
+                };
+                initFirebase();
+            }, []);
+
+            useEffect(() => {
+                if (!isAuthReady || !db || !userId || userId === 'Loading...') return;
+
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const tradesCollectionRef = firebase.collection(db, `artifacts/${appId}/users/${userId}/trades`);
+                
+                const unsubscribeTrades = firebase.onSnapshot(tradesCollectionRef, (querySnapshot) => {
+                    const trades = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    setTradeLog(trades);
+                });
+                
+                return () => {
+                    unsubscribeTrades();
+                };
+            }, [isAuthReady, db, userId]);
+
+            const saveOrUpdateTrade = async () => {
+                if (!db || !userId) { alert('Error: Firebase not initialized.'); return; }
+                if (!data.section2.tickerSymbol) { alert('Please enter a ticker symbol before saving.'); return; }
+
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const tradeData = {
+                    data,
+                    ticker: data.section2.tickerSymbol,
+                    status: data.section8.step1.status,
+                    lastUpdated: new Date().toISOString(),
+                    changeDescription: changeDescription || "Data update"
+                };
+
+                try {
+                    if (currentTradeId) {
+                        const tradeDocRef = firebase.doc(db, `artifacts/${appId}/users/${userId}/trades`, currentTradeId);
+                        const currentDoc = await firebase.getDoc(tradeDocRef);
+                        
+                        if (currentDoc.exists()) {
+                            const versionsCollectionRef = firebase.collection(db, `artifacts/${appId}/users/${userId}/trades/${currentTradeId}/versions`);
+                            await firebase.addDoc(versionsCollectionRef, currentDoc.data());
+                        }
+                        
+                        await firebase.updateDoc(tradeDocRef, tradeData);
+                        alert('Trade updated successfully. Previous version has been archived.');
+                    } else {
+                        const tradesCollectionRef = firebase.collection(db, `artifacts/${appId}/users/${userId}/trades`);
+                        const docRef = await firebase.addDoc(tradesCollectionRef, tradeData);
+                        setCurrentTradeId(docRef.id);
+                        alert('New trade saved successfully!');
+                    }
+                    setIsDataDirty(false);
+                    setChangeDescription('');
+                } catch (e) {
+                    console.error("Error saving document: ", e);
+                    alert('Error saving data: ' + e.message);
+                }
+            };
+            
+            const restoreVersion = (trade) => {
+                if (confirm(`Are you sure you want to load the trade for ${trade.ticker} from ${new Date(trade.lastUpdated).toLocaleString()}? This will overwrite your current unsaved changes.`)) {
+                    loadTrade(trade);
+                }
+            };
+
+            const emergencyRestore = () => {
+                if (tradeLog.length > 0) {
+                    const sortedTrades = [...tradeLog].sort((a, b) => new Date(b.lastUpdated) - new Date(a.lastUpdated));
+                    const latestTrade = sortedTrades[0];
+                    if (confirm(`This will restore the last saved trade: ${latestTrade.ticker} from ${new Date(latestTrade.lastUpdated).toLocaleString()}. Are you sure?`)) {
+                        loadTrade(latestTrade);
+                    }
+                } else {
+                    alert("No trades found to restore.");
+                }
+            };
+
+            const generateStandardFileName = (description, extension) => {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+                const dateStamp = `${year}${month}${day}_${hours}${minutes}${seconds}`;
+                const finalDescription = (changeDescription || description).replace(/[^a-zA-Z0-9]/g, '-');
+                return `PraxisAI_v${APP_VERSION}_${finalDescription}_${dateStamp}.${extension}`;
+            };
+
+            const exportDataAsJson = () => {
+                const dataToExport = {mainData: data };
+                const jsonString = JSON.stringify(dataToExport, null, 2); 
+                const fileName = generateStandardFileName('DataBackup', 'json');
+                const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = fileName; 
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+
+            const importDataFromJson = (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        populateDashboardData(importedData.mainData, true); 
+                        alert('Data loaded successfully! Click "Save New Trade" or "Update Trade" to sync with the cloud.'); 
+                    } catch (error) {
+                        alert('Error loading JSON file: ' + error.message); 
+                    }
+                };
+                reader.readAsText(file);
+            };
+            
+            const exportSourceCode = () => {
+                const htmlContent = document.documentElement.outerHTML;
+                const fileName = generateStandardFileName('SourceCode', 'html');
+                const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+
+            const exportAsPng = async (sectionsToExport, modalRef) => {
+                const dashboardEl = document.querySelector('.dashboard-container');
+                if (!dashboardEl) return;
+                
+                if(modalRef.current) modalRef.current.style.display = 'none';
+
+                try {
+                    const canvas = await html2canvas(dashboardEl, { scale: 2, useCORS: true });
+                    const fileName = generateStandardFileName('Snapshot', 'png');
+                    const link = document.createElement('a');
+                    link.href = canvas.toDataURL('image/png');
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } catch (error) {
+                    console.error("Error exporting as PNG:", error);
+                } finally {
+                    if(modalRef.current) modalRef.current.style.display = 'flex';
+                }
+            };
+
+            const exportAsPdf = async (sectionsToExport, modalRef) => {
+                const dashboardEl = document.querySelector('.dashboard-container');
+                if (!dashboardEl) return;
+
+                if(modalRef.current) modalRef.current.style.display = 'none';
+
+                const allSections = dashboardEl.querySelectorAll('.section-container');
+                allSections.forEach(section => {
+                    const title = section.getAttribute('data-section-title');
+                    if (sectionsToExport.length > 0 && !sectionsToExport.includes(title)) {
+                        section.style.display = 'none';
+                    }
+                });
+
+                try {
+                    const canvas = await html2canvas(dashboardEl, { scale: 2, useCORS: true });
+                    const imgData = canvas.toDataURL('image/png');
+                    const { jsPDF } = jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    const imgProps = pdf.getImageProperties(imgData);
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                    pdf.save(generateStandardFileName('Report', 'pdf'));
+                } catch (error) {
+                    console.error("Error exporting as PDF:", error);
+                } finally {
+                        allSections.forEach(section => {
+                            section.style.display = '';
+                        });
+                        if(modalRef.current) modalRef.current.style.display = 'flex';
+                }
+            };
+            
+            const value = {
+                userId, isAuthReady, db, saveOrUpdateTrade,
+                exportDataAsJson, importDataFromJson, exportSourceCode,
+                exportAsPng, exportAsPdf, restoreVersion, emergencyRestore
+            };
+
+            return (
+                <FirebaseContext.Provider value={value}>
+                    {children}
+                </FirebaseContext.Provider>
+            );
+        };
+        
+        //======================================================================
+        //  5. UI COMPONENTS (NEW & UPDATED)
+        //======================================================================
+
+        const Tabs = ({ children }) => {
+            const [activeTab, setActiveTab] = useState(children[0].props.label);
+
+            const handleClick = (e, newActiveTab) => {
+                e.preventDefault();
+                setActiveTab(newActiveTab);
+            };
+
+            return (
+                <div>
+                    <div className="tabs-container">
+                        {children.map(child => (
+                            <button
+                                key={child.props.label}
+                                className={`${activeTab === child.props.label ? 'active' : ''} tab-button`}
+                                onClick={e => handleClick(e, child.props.label)}
+                            >
+                                <i className={`fas ${child.props.icon} mr-2`}></i>
+                                {child.props.label}
+                            </button>
+                        ))}
+                    </div>
+                    <div className="tab-content-container">
+                        {children.map(child => {
+                            if (child.props.label === activeTab) {
+                                return <div key={child.props.label} className="tab-content active">{child.props.children}</div>;
+                            }
+                            return <div key={child.props.label} className="tab-content">{child.props.children}</div>;
+                        })}
+                    </div>
+                </div>
+            );
+        };
+
+        const Tab = ({ label, children }) => {
+            return (
+                <div label={label} className="hidden">
+                    {children}
+                </div>
+            );
+        };
+
+        const Indicator = ({ text, colorClass, iconClass }) => (
+            <span className={`flex items-center font-semibold ${colorClass}`}>
+                {iconClass && <i className={`fas ${iconClass} mr-2`}></i>}
+                {text}
+            </span>
+        );
+
+        const InfoRow = ({ label, children, paramKey, onInfoClick, indicator }) => (
+            <div className="info-row flex flex-wrap sm:flex-nowrap justify-between items-center py-2">
+                <span className="label w-full sm:w-1/3 mb-1 sm:mb-0 flex items-center">
+                    {label}
+                    {paramKey && (
+                        <i 
+                            className="fas fa-info-circle text-gray-400 ml-2 cursor-pointer"
+                            onClick={() => onInfoClick(paramKey)}
+                            title={`Learn more about ${label}`}
+                        ></i>
+                    )}
+                </span>
+                <div className="w-full sm:w-2/3 flex items-center justify-end">
+                    {indicator && <div className="ml-4">{indicator}</div>}
+                    <div className="flex-grow">{children}</div>
+                </div>
+            </div>
+        );
+        
+        const Section = ({ title, children }) => (
+            <div className="section-container" data-section-title={title}>
+                <h2 className="section-group-title text-left mt-10 mb-5 pb-2">{title}</h2>
+                <div className="section-grid">
+                    {children}
+                </div>
+            </div>
+        );
+
+        const InfoSectionCard = ({ icon, title, children }) => (
+            <div className="info-section flex flex-col">
+                <div className="info-section-header flex items-center w-full mb-2">
+                    <div className="icon-container mr-3 w-8 text-center"><i className={`fas ${icon}`} title={title}></i></div>
+                    <div className="text-content flex-grow">
+                        {title && <h3 className="text-left mt-0 mb-2">{title}</h3>}
+                    </div>
+                </div>
+                {children}
+            </div>
+        );
+        
+        const Header = () => {
+            const { currentDateTime } = useData();
+            return (
+                <>
+                    <div className="absolute top-4 right-4 text-sm text-gray-400 font-light">
+                        {currentDateTime}
+                    </div>
+                    <div className="text-center mb-4">
+                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-teal-400 mb-2 leading-tight">
+                            Praxis AI
+                        </h1>
+                        <p className="text-lg sm:text-xl text-gray-300 font-light">
+                            Translating Market Chaos into Actionable Clarity
+                        </p>
+                    </div>
+                </>
+            );
+        };
+        
+        const Breadcrumb = () => {
+            return (
+                <nav className="text-sm text-gray-400 mb-6" aria-label="Breadcrumb">
+                    <ol className="list-none p-0 inline-flex">
+                        <li className="flex items-center">
+                            <a href="#" className="hover:text-teal-400">Home</a>
+                            <i className="fas fa-chevron-right mx-2"></i>
+                        </li>
+                        <li className="flex items-center">
+                            <span className="text-white">Dashboard</span>
+                        </li>
+                    </ol>
+                </nav>
+            );
+        };
+
+        const GlobalFilter = () => {
+            const { globalFilter, setGlobalFilter, globalSearchQuery, setGlobalSearchQuery } = useData();
+            
+            return (
+                <div className="bg-gray-800 p-4 rounded-lg mb-8 flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex items-center gap-2">
+                        <span className="font-semibold">Filter Trades:</span>
+                        {['All', 'Open', 'Closed'].map(status => (
+                            <button 
+                                key={status} 
+                                onClick={() => setGlobalFilter(status)}
+                                className={`px-3 py-1 text-xs rounded-md ${globalFilter === status ? 'bg-indigo-600 text-white' : 'bg-gray-600'}`}>
+                                {status}
+                            </button>
+                        ))}
+                    </div>
+                    <div className="relative">
+                        <input 
+                            type="text"
+                            placeholder="Search by ticker..."
+                            value={globalSearchQuery}
+                            onChange={(e) => setGlobalSearchQuery(e.target.value)}
+                            className="w-full sm:w-auto pl-8"
+                        />
+                        <i className="fas fa-search absolute left-2 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+            );
+        };
+
+        const KpiCard = ({ title, value, change, isPositive }) => {
+            const colorClass = isPositive === null ? 'text-gray-300' : (isPositive ? 'text-green-400' : 'text-red-400');
+            const icon = isPositive ? 'fa-arrow-up' : 'fa-arrow-down';
+            return (
+                <div className="bg-gray-700 p-4 rounded-lg shadow-md flex flex-col justify-between">
+                    <p className="text-gray-400 text-sm font-medium">{title}</p>
+                    <p className="text-2xl font-bold text-white">{value}</p>
+                    <div className={`flex items-center text-sm ${colorClass}`}>
+                        {change && isPositive !== null && <i className={`fas ${icon} mr-1`}></i>}
+                        <span>{change}</span>
+                    </div>
+                </div>
+            );
+        };
+
+        const KpiSection = ({ calculatedData }) => {
+            const { data } = useData();
+            const { dailyPLUSD, buyingPowerUSD } = data.section1;
+            const { currentPortfolioValueUSD, totalPLUSD, totalPLPercentage } = calculatedData;
+            
+            return (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    <KpiCard title="Current Portfolio Value ($)" value={`$${(parseFloat(currentPortfolioValueUSD) || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`} change="" isPositive={null} />
+                    <KpiCard title="Total P/L ($)" value={`$${(parseFloat(totalPLUSD) || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`} change={`${(parseFloat(totalPLPercentage) || 0).toFixed(2)}%`} isPositive={totalPLUSD >= 0} />
+                    <KpiCard title="Daily P/L ($)" value={`$${(dailyPLUSD || 0).toLocaleString()}`} change="" isPositive={dailyPLUSD >= 0} />
+                    <KpiCard title="Buying Power ($)" value={`$${(buyingPowerUSD || 0).toLocaleString()}`} change="" isPositive={null} />
+                </div>
+            );
+        };
+        
+        const ControlPanel = () => {
+            const { data, setData, setApiStatus, isDataDirty, currentTradeId, changeDescription, setChangeDescription, populateDashboardData, setIsLiveDataSet } = useData();
+            const { saveOrUpdateTrade, importDataFromJson, userId, db, isAuthReady } = useFirebase();
+            
+            const [isBackupKitOpen, setIsBackupKitOpen] = useState(false);
+            const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+            const [isTrainingCenterOpen, setIsTrainingCenterOpen] = useState(false);
+            const [isKnowledgeBaseOpen, setIsKnowledgeBaseOpen] = useState(false);
+            const [restoreCode, setRestoreCode] = useState('');
+            const [importCode, setImportCode] = useState('');
+            const [githubToken, setGithubToken] = useState('');
+            const [alphaVantageKey, setAlphaVantageKey] = useState('U4464522W6V69P5G');
+            const [gistUrl, setGistUrl] = useState('');
+            const [isGistLoading, setIsGistLoading] = useState(false);
+            const importFileRef = useRef(null);
+
+            useEffect(() => {
+                const fetchSettings = async () => {
+                    if (isAuthReady && db && userId) {
+                        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                        const githubDocRef = firebase.doc(db, `artifacts/${appId}/users/${userId}/settings/github`);
+                        const avDocRef = firebase.doc(db, `artifacts/${appId}/users/${userId}/settings/alphaVantage`);
+                        
+                        const [githubSnap, avSnap] = await Promise.all([firebase.getDoc(githubDocRef), firebase.getDoc(avDocRef)]);
+
+                        if (githubSnap.exists()) setGithubToken(githubSnap.data().token || '');
+                        if (avSnap.exists()) setAlphaVantageKey(avSnap.data().key || 'U4464522W6V69P5G');
+                    }
+                };
+                fetchSettings();
+            }, [isAuthReady, db, userId]);
+
+            const handleTokenChange = async (e) => {
+                const newToken = e.target.value;
+                setGithubToken(newToken);
+                if (isAuthReady && db && userId) {
+                    try {
+                        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                        const settingsDocRef = firebase.doc(db, `artifacts/${appId}/users/${userId}/settings/github`);
+                        await firebase.setDoc(settingsDocRef, { token: newToken }, { merge: true });
+                    } catch (error) {
+                        console.error("Error saving GitHub token:", error);
+                        alert("Could not save GitHub token.");
+                    }
+                }
+            };
+
+            const handleApiKeyChange = async (e) => {
+                const newKey = e.target.value;
+                setAlphaVantageKey(newKey);
+                    if (isAuthReady && db && userId) {
+                        try {
+                            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                            const settingsDocRef = firebase.doc(db, `artifacts/${appId}/users/${userId}/settings/alphaVantage`);
+                            await firebase.setDoc(settingsDocRef, { key: newKey }, { merge: true });
+                        } catch (error) {
+                            console.error("Error saving API key:", error);
+                            alert("Could not save API key.");
+                        }
+                    }
+            };
+
+            const handleRefreshData = () => {
+                const ticker = data.section2.tickerSymbol;
+                if (!alphaVantageKey) {
+                    alert("Please enter your Alpha Vantage API key first.");
+                    return;
+                }
+                if (ticker) {
+                    fetchApiData(ticker, alphaVantageKey, setData, setApiStatus, setIsLiveDataSet);
+                } else {
+                    alert("Please enter a ticker symbol first.");
+                }
+            };
+
+            const generateRestoreCode = () => {
+                try {
+                    const dataToExport = { mainData: data };
+                    const jsonString = JSON.stringify(dataToExport);
+                    const base64Code = btoa(jsonString);
+                    setRestoreCode(base64Code);
+                    alert('Restore code generated successfully.');
+                } catch (error) {
+                    alert('Error generating restore code: ' + error.message);
+                }
+            };
+
+            const importFromCode = () => {
+                if (!importCode) {
+                    alert('Please paste a restore code first.');
+                    return;
+                }
+                try {
+                    const jsonString = atob(importCode);
+                    const importedData = JSON.parse(jsonString);
+                    populateDashboardData(importedData.mainData, true);
+                    alert('Data loaded successfully from code! Click "Save" or "Update" to sync with the cloud.');
+                    setImportCode('');
+                } catch (error) {
+                    alert('Error importing from code. The code might be invalid: ' + error.message);
+                }
+            };
+            
+            const copyToClipboard = (text) => {
+                if (!text) return;
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('Copied to clipboard!');
+            };
+
+            const backupToGist = async () => {
+                if (!githubToken) {
+                    alert('Please enter your GitHub Personal Access Token first.');
+                    return;
+                }
+                setIsGistLoading(true);
+                setGistUrl('');
+
+                try {
+                    const dataToExport = { mainData: data };
+                    const files = {
+                        'PraxisAI_Dashboard.html': {
+                            content: document.documentElement.outerHTML
+                        },
+                        'PraxisAI_Data.json': {
+                            content: JSON.stringify(dataToExport, null, 2)
+                        }
+                    };
+
+                    const response = await fetch('https://api.github.com/gists', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `token ${githubToken}`,
+                            'Accept': 'application/vnd.github.v3+json',
+                        },
+                        body: JSON.stringify({
+                            description: `Praxis AI Dashboard Backup - ${new Date().toLocaleString()}`,
+                            public: false,
+                            files: files
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`GitHub API Error: ${errorData.message}`);
+                    }
+
+                    const gistData = await response.json();
+                    setGistUrl(gistData.html_url);
+                    alert('Backup to Gist successful!');
+
+                } catch (error) {
+                    alert('Error backing up to Gist: ' + error.message);
+                } finally {
+                    setIsGistLoading(false);
+                }
+            };
+
+            return(
+                <>
+                    {isBackupKitOpen && <BackupKitModal 
+                        onClose={() => setIsBackupKitOpen(false)}
+                        restoreCode={restoreCode}
+                        importCode={importCode}
+                        setImportCode={setImportCode}
+                        generateRestoreCode={generateRestoreCode}
+                        importFromCode={importFromCode}
+                        copyToClipboard={copyToClipboard}
+                        />}
+                    {isExportModalOpen && <ExportModal onClose={() => setIsExportModalOpen(false)} />}
+                    {isTrainingCenterOpen && <AiTrainingCenterModal onClose={() => setIsTrainingCenterOpen(false)} />}
+                    {isKnowledgeBaseOpen && <KnowledgeBaseModal onClose={() => setIsKnowledgeBaseOpen(false)} />}
+
+                    <Section title="System Control & I/O">
+                        <InfoSectionCard icon="fa-cogs" title="Actions & Data Management">
+                            <div className="grid grid-cols-2 gap-2 mb-4">
+                                <button 
+                                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-200 flex items-center justify-center disabled:opacity-50 min-h-[44px]"
+                                    onClick={saveOrUpdateTrade} disabled={!isDataDirty}>
+                                    <i className="fas fa-save mr-2"></i> {currentTradeId ? 'Update Trade' : 'Save New Trade'}
+                                </button>
+                                <button 
+                                    className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-200 flex items-center justify-center min-h-[44px]"
+                                    onClick={handleRefreshData} title="Refresh live market data">
+                                    <i className="fas fa-sync-alt mr-2"></i> Refresh Data
+                                </button>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2">
+                                <button onClick={() => setIsBackupKitOpen(true)} className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2 px-2 rounded-lg shadow-md transition-all min-h-[44px]" title="Open the full backup kit"><i className="fas fa-archive mr-1"></i> Full Backup Kit</button>
+                                <button onClick={() => importFileRef.current.click()} className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2 px-2 rounded-lg shadow-md transition-all min-h-[44px]" title="Import data from a JSON backup file"><i className="fas fa-file-upload mr-1"></i> Import Data (JSON)</button>
+                                <input type="file" ref={importFileRef} onChange={importDataFromJson} className="hidden" accept=".json" />
+                            </div>
+                                <div className="mt-2 grid grid-cols-2 gap-2">
+                                    <button onClick={() => setIsExportModalOpen(true)} className="w-full bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold py-2 px-2 rounded-lg shadow-md transition-all min-h-[44px]" title="Export a custom PDF report"><i className="fas fa-file-pdf mr-1"></i> Custom PDF Export</button>
+                                    <button onClick={() => setIsTrainingCenterOpen(true)} className="w-full bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold py-2 px-2 rounded-lg shadow-md transition-all min-h-[44px]" title="Open AI Training Center"><i className="fas fa-brain mr-1"></i> AI Training Center</button>
+                                </div>
+                                <div className="mt-2">
+                                    <button onClick={() => setIsKnowledgeBaseOpen(true)} className="w-full bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-semibold py-2 px-2 rounded-lg shadow-md transition-all min-h-[44px]" title="Open Knowledge Base"><i className="fas fa-book-open mr-1"></i> Knowledge Base</button>
+                                </div>
+                                <div className="flex flex-col text-sm mt-4">
+                                    <label htmlFor="changeDescriptionInput" className="text-gray-400 mb-1">Change Description (for version tracking):</label>
+                                    <textarea id="changeDescriptionInput" placeholder="e.g., Updated trade on AAPL..."
+                                        className="w-full bg-gray-800 border border-gray-600 rounded-md p-2 text-white"
+                                        value={changeDescription} onChange={(e) => setChangeDescription(e.target.value)} />
+                                </div>
+                        </InfoSectionCard>
+                        <InfoSectionCard icon="fa-key" title="API Key Management">
+                           <div className="space-y-3">
+                                <p className="text-xs text-gray-400">Enter your API keys here. They will be saved securely.</p>
+                                <div>
+                                    <label className="text-sm text-gray-300">Alpha Vantage API Key</label>
+                                    <input 
+                                        type="password"
+                                        value={alphaVantageKey}
+                                        onChange={handleApiKeyChange}
+                                        placeholder="Enter your key for live data"
+                                        className="w-full mt-1"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-sm text-gray-300">GitHub Personal Access Token</label>
+                                    <input 
+                                        type="password"
+                                        value={githubToken}
+                                        onChange={handleTokenChange}
+                                        placeholder="Enter your key for Gist backups"
+                                        className="w-full mt-1"
+                                    />
+                                </div>
+                           </div>
+                        </InfoSectionCard>
+                        <InfoSectionCard icon="fa-cloud-upload-alt" title="Cloud Backup (GitHub Gist)">
+                           <div className="space-y-3">
+                                <p className="text-xs text-gray-400">Backup all project assets to a private, secure Gist in your GitHub account.</p>
+                                <button onClick={backupToGist} disabled={isGistLoading} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md disabled:opacity-50">
+                                    {isGistLoading ? 'Backing up...' : 'Backup to Gist'}
+                                </button>
+                                {gistUrl && (
+                                    <div className="text-center text-xs">
+                                        <p className="text-green-400">Backup successful!</p>
+                                        <a href={gistUrl} target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">View Gist</a>
+                                    </div>
+                                )}
+                           </div>
+                        </InfoSectionCard>
+                    </Section>
+                </>
+            );
+        };
+        
+        const BITDashboard = () => {
+            const { currentDateTime } = useData();
+            const appChangeLog = [
+                { version: "8.1", date: "2025-08-22", description: "Refactored calculation logic to resolve infinite loop and instability. Restored full stock list." },
+                { version: "8.0", date: "2025-08-22", description: "Fixed infinite loop bug, reverted to English UI, and restored full stock database." },
+                { version: "7.9", date: "2025-08-21", description: "Fixed infinite loop bug caused by useEffect dependencies." },
+                { version: "7.8", date: "2025-08-21", description: "Updated portfolio section to match investment account statements." },
+            ];
+            const latestVersion = appChangeLog[0];
+
+            return (
+                <div className="bg-gray-900 rounded-lg p-4 shadow-md border border-gray-700 mb-6">
+                    <h3 className="text-xl font-semibold text-orange-400 flex items-center mb-4"><i className="fas fa-tachometer-alt mr-3"></i>System Integrity (BIT)</h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                        <div><i className="fas fa-cloud text-2xl mb-2" style={{ color: 'var(--green-indicator)' }}></i><p className="text-sm text-gray-400">Cloud Sync</p><p className="font-semibold" style={{ color: 'var(--green-indicator)' }}>Connected</p></div>
+                        <div className="flex flex-col"><i className="fas fa-shield-alt text-2xl mb-2" style={{ color: 'var(--text-color)' }}></i><p className="text-sm text-gray-400">Last Full Backup</p><p className="font-semibold text-xs" style={{ color: 'var(--text-color)' }}>v{latestVersion.version} ({latestVersion.description}): {currentDateTime}</p></div>
+                        <div><i className="fas fa-check-circle text-2xl mb-2" style={{ color: 'var(--green-indicator)' }}></i><p className="text-sm text-gray-400">Data Integrity</p><p className="font-semibold" style={{ color: 'var(--green-indicator)' }}>OK</p></div>
+                        <div><i className="fas fa-brain text-2xl mb-2" style={{ color: 'var(--green-indicator)' }}></i><p className="text-sm text-gray-400">AI Services</p><p className="font-semibold" style={{ color: 'var(--green-indicator)' }}>Online</p></div>
+                    </div>
+                </div>
+            );
+        };
+
+        const VersionManagementCenter = () => {
+            const appChangeLog = [
+                 { version: "8.1", date: "2025-08-22", description: "Refactored calculation logic to resolve infinite loop and instability. Restored full stock list." },
+                 { version: "8.0", date: "2025-08-22", description: "Fixed infinite loop bug, reverted to English UI, and restored full stock database." },
+                 { version: "7.9", date: "2025-08-21", description: "Fixed infinite loop bug caused by useEffect dependencies." },
+            ];
+
+            return (
+                <Section title="🚨 Version Control & Recovery">
+                    <InfoSectionCard icon="fa-history" title="Application Change Log">
+                        <div className="w-full overflow-x-auto" style={{maxHeight: '250px'}}>
+                            <table className="w-full text-left text-sm">
+                                <thead>
+                                    <tr className="border-b border-gray-600">
+                                        <th className="p-2">Version</th>
+                                        <th className="p-2">Date</th>
+                                        <th className="p-2">Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {appChangeLog.map(log => (
+                                        <tr key={log.version} className="border-b border-gray-700 hover:bg-gray-700">
+                                            <td className="p-2 font-semibold text-teal-400">{log.version}</td>
+                                            <td className="p-2">{log.date}</td>
+                                            <td className="p-2">{log.description}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </InfoSectionCard>
+                </Section>
+            );
+        };
+
+        const TradeLogManager = () => {
+            const { tradeLog, loadTrade, newTrade, globalFilter, globalSearchQuery } = useData();
+            const [sortConfig, setSortConfig] = useState({ key: 'lastUpdated', direction: 'descending' });
+            const [dateRange, setDateRange] = useState({ start: '', end: '' });
+
+            const sortedAndFilteredTrades = useMemo(() => {
+                let filtered = [...tradeLog];
+
+                // Global Status & Search Filter
+                filtered = filtered.filter(trade => {
+                    const statusMatch = globalFilter === 'All' || trade.status === globalFilter;
+                    const searchMatch = trade.ticker.toLowerCase().includes(globalSearchQuery.toLowerCase());
+                    return statusMatch && searchMatch;
+                });
+
+                // Date Range Filter
+                if (dateRange.start) {
+                    filtered = filtered.filter(trade => new Date(trade.lastUpdated) >= new Date(dateRange.start));
+                }
+                if (dateRange.end) {
+                    const endDate = new Date(dateRange.end);
+                    endDate.setHours(23, 59, 59, 999); // Include the whole end day
+                    filtered = filtered.filter(trade => new Date(trade.lastUpdated) <= endDate);
+                }
+
+                // Sorting
+                filtered.sort((a, b) => {
+                    let aValue, bValue;
+                    
+                    switch (sortConfig.key) {
+                        case 'pnl':
+                            aValue = parseFloat(a.data.section8.step4.financialResult) || 0;
+                            bValue = parseFloat(b.data.section8.step4.financialResult) || 0;
+                            break;
+                        case 'roi':
+                            aValue = parseFloat(a.data.section8.step4.roi) || 0;
+                            bValue = parseFloat(b.data.section8.step4.roi) || 0;
+                            break;
+                        default:
+                            aValue = a[sortConfig.key];
+                            bValue = b[sortConfig.key];
+                    }
+                    
+                    if (aValue < bValue) {
+                        return sortConfig.direction === 'ascending' ? -1 : 1;
+                    }
+                    if (aValue > bValue) {
+                        return sortConfig.direction === 'ascending' ? 1 : -1;
+                    }
+                    return 0;
+                });
+
+                return filtered;
+            }, [tradeLog, globalFilter, globalSearchQuery, sortConfig, dateRange]);
+
+            const requestSort = (key) => {
+                let direction = 'ascending';
+                if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+                    direction = 'descending';
+                }
+                setSortConfig({ key, direction });
+            };
+            
+            const summary = useMemo(() => {
+                const closedTrades = sortedAndFilteredTrades.filter(t => t.status !== 'Open' && t.data.section8.step4.financialResult);
+                const totalPnl = closedTrades.reduce((acc, t) => acc + parseFloat(t.data.section8.step4.financialResult), 0);
+                const winningTrades = closedTrades.filter(t => parseFloat(t.data.section8.step4.financialResult) > 0);
+                const winRate = closedTrades.length > 0 ? (winningTrades.length / closedTrades.length) * 100 : 0;
+                
+                return {
+                    totalTrades: sortedAndFilteredTrades.length,
+                    totalPnl: totalPnl.toFixed(2),
+                    winRate: winRate.toFixed(2),
+                    winningTrades: winningTrades.length,
+                    losingTrades: closedTrades.length - winningTrades.length,
+                };
+            }, [sortedAndFilteredTrades]);
+
+            return (
+                <Section title="Advanced Trade Log">
+                    <InfoSectionCard icon="fa-book" title="Manage & Analyze Your Trades">
+                        <div className="flex flex-wrap gap-4 justify-between items-center mb-4">
+                             <div className="flex gap-2 items-center">
+                                <label className="text-sm">From:</label>
+                                <input type="date" value={dateRange.start} onChange={e => setDateRange({...dateRange, start: e.target.value})} className="bg-gray-800 border border-gray-600 rounded-md p-1 text-sm"/>
+                                <label className="text-sm">To:</label>
+                                <input type="date" value={dateRange.end} onChange={e => setDateRange({...dateRange, end: e.target.value})} className="bg-gray-800 border border-gray-600 rounded-md p-1 text-sm"/>
+                            </div>
+                            <button onClick={newTrade} className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md">
+                                <i className="fas fa-plus mr-2"></i>New Trade
+                            </button>
+                        </div>
+
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 text-center">
+                            <KpiCard title="Total P/L" value={`$${summary.totalPnl}`} change="" isPositive={summary.totalPnl >= 0} />
+                            <KpiCard title="Win Rate" value={`${summary.winRate}%`} change="" isPositive={summary.winRate >= 50} />
+                            <KpiCard title="Winners" value={summary.winningTrades} change="" isPositive={true} />
+                            <KpiCard title="Losers" value={summary.losingTrades} change="" isPositive={false} />
+                        </div>
+
+                        <div className="w-full overflow-x-auto" style={{maxHeight: '400px'}}>
+                            <table className="w-full text-left text-sm">
+                                <thead>
+                                    <tr className="border-b border-gray-600">
+                                        <th className="p-2 cursor-pointer" onClick={() => requestSort('ticker')}>Ticker <i className="fas fa-sort"></i></th>
+                                        <th className="p-2 cursor-pointer" onClick={() => requestSort('status')}>Status <i className="fas fa-sort"></i></th>
+                                        <th className="p-2 cursor-pointer" onClick={() => requestSort('lastUpdated')}>Last Updated <i className="fas fa-sort"></i></th>
+                                        <th className="p-2 cursor-pointer" onClick={() => requestSort('pnl')}>P/L ($) <i className="fas fa-sort"></i></th>
+                                        <th className="p-2 cursor-pointer" onClick={() => requestSort('roi')}>ROI (%) <i className="fas fa-sort"></i></th>
+                                        <th className="p-2 text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {sortedAndFilteredTrades.map(trade => {
+                                        const pnl = parseFloat(trade.data.section8.step4.financialResult) || 0;
+                                        const roi = parseFloat(trade.data.section8.step4.roi) || 0;
+                                        return (
+                                        <tr key={trade.id} className="border-b border-gray-700 hover:bg-gray-700">
+                                            <td className="p-2 font-bold">{trade.ticker}</td>
+                                            <td className="p-2">{trade.status}</td>
+                                            <td className="p-2">{new Date(trade.lastUpdated).toLocaleString()}</td>
+                                            <td className={`p-2 font-semibold ${pnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>{pnl.toFixed(2)}</td>
+                                            <td className={`p-2 font-semibold ${roi >= 0 ? 'text-green-400' : 'text-red-400'}`}>{roi.toFixed(2)}%</td>
+                                            <td className="p-2 text-center">
+                                                <button onClick={() => loadTrade(trade)} className="bg-blue-600 hover:bg-blue-700 text-white text-xs py-1 px-2 rounded-md">
+                                                    Load
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    )})}
+                                </tbody>
+                            </table>
+                        </div>
+                    </InfoSectionCard>
+                </Section>
+            );
+        };
+
+        const AdvancedRiskModule = ({ riskData }) => {
+            return (
+                <Section title="🛡️ Advanced Risk Management">
+                    <InfoSectionCard icon="fa-shield-alt" title="Portfolio Risk Exposure">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <KpiCard 
+                                    title="Total Risk on Open Trades" 
+                                    value={`$${riskData.totalRiskExposure.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`} 
+                                    change={`${riskData.openTradesCount} trades`}
+                                    isPositive={false}
+                                />
+                            </div>
+                            <div>
+                                <h4 className="font-bold text-lg text-teal-400 mb-2">Risk Concentration by Sector</h4>
+                                <div className="bg-gray-800 p-3 rounded-lg">
+                                    {Object.keys(riskData.sectorConcentration).length > 0 ? (
+                                        Object.entries(riskData.sectorConcentration).map(([sector, risk]) => (
+                                            <div key={sector} className="flex justify-between items-center text-sm mb-2">
+                                                <span className="font-semibold">{sector}</span>
+                                                <span className="text-red-400">${risk.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className="text-gray-400 text-sm">No open trades to analyze.</p>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </InfoSectionCard>
+                </Section>
+            );
+        };
+
+        const TradeDistributionChart = () => {
+            const chartRef = useRef(null);
+            const { tradeLog } = useData();
+
+            useEffect(() => {
+                if (!tradeLog || !chartRef.current) return;
+                const ctx = chartRef.current.getContext('2d');
+                
+                const closedTrades = tradeLog.filter(t => t.status !== 'Open');
+                const profitTrades = closedTrades.filter(t => parseFloat(t.data.section8.step4.financialResult) > 0).length;
+                const lossTrades = closedTrades.length - profitTrades;
+                const openTrades = tradeLog.filter(t => t.status === 'Open').length;
+
+                if (chartRef.current && chartRef.current.chart) {
+                    chartRef.current.chart.destroy();
+                }
+
+                chartRef.current.chart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Profit', 'Loss', 'Open'],
+                        datasets: [{
+                            data: [profitTrades, lossTrades, openTrades],
+                            backgroundColor: ['rgba(72, 187, 120, 0.7)', 'rgba(239, 83, 80, 0.7)', 'rgba(66, 153, 225, 0.7)'],
+                            borderColor: [ 'rgba(72, 187, 120, 1)', 'rgba(239, 83, 80, 1)', 'rgba(66, 153, 225, 1)'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: { responsive: true, plugins: { legend: { position: 'top', labels: { color: 'white', font: { family: 'Assistant' } } } } }
+                });
+                
+                return () => { if(chartRef.current && chartRef.current.chart) chartRef.current.chart.destroy(); };
+            }, [tradeLog]);
+
+            return (
+                <InfoSectionCard icon="fa-chart-pie" title="Trade Outcome Distribution">
+                    <p className="text-xs text-gray-400 mb-2 -mt-2">A summary of all logged trade outcomes.</p>
+                    <canvas ref={chartRef}></canvas>
+                </InfoSectionCard>
+            );
+        };
+
+        const PortfolioHistoryChart = () => {
+            const chartRef = useRef(null);
+            const { data } = useData();
+            const [timeRange, setTimeRange] = useState(90);
+
+            useEffect(() => {
+                if (!chartRef.current || !data.portfolioHistory) return;
+                const ctx = chartRef.current.getContext('2d');
+                
+                if (chartRef.current && chartRef.current.chart) {
+                    chartRef.current.chart.destroy();
+                }
+                
+                const filteredData = data.portfolioHistory.slice(-timeRange);
+
+                chartRef.current.chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        datasets: [{
+                            label: 'Portfolio Value',
+                            data: filteredData,
+                            parsing: {
+                                xAxisKey: 'time',
+                                yAxisKey: 'value'
+                            },
+                            borderColor: 'var(--accent-color-2)',
+                            backgroundColor: 'rgba(0, 188, 212, 0.2)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 0,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: { unit: 'day' },
+                                ticks: { color: 'white' },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            },
+                            y: {
+                                ticks: { color: 'white', callback: (value) => `$${(value/1000)}k` },
+                                grid: { color: 'rgba(255,255,255,0.1)' }
+                            }
+                        },
+                        plugins: { 
+                            legend: { display: false },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: {
+                                    label: (context) => `Value: $${context.parsed.y.toFixed(2)}`
+                                }
+                            }
+                        }
+                    }
+                });
+                return () => { if(chartRef.current && chartRef.current.chart) chartRef.current.chart.destroy(); };
+            }, [data.portfolioHistory, timeRange]);
+
+            return (
+                <InfoSectionCard icon="fa-chart-line" title="Portfolio Value Over Time">
+                    <p className="text-xs text-gray-400 mb-2 -mt-2">Portfolio performance history.</p>
+                    <div className="flex justify-center gap-2 mb-4">
+                        {[7, 30, 90].map(days => (
+                            <button key={days} onClick={() => setTimeRange(days)} className={`px-3 py-1 text-xs rounded-md ${timeRange === days ? 'bg-indigo-600 text-white' : 'bg-gray-600'}`}>
+                                {days}D
+                            </button>
+                        ))}
+                    </div>
+                    <canvas ref={chartRef}></canvas>
+                </InfoSectionCard>
+            );
+        };
+        
+        const AiAnalysis = () => {
+            const { data, currentTradeId } = useData();
+            const { db, userId, isAuthReady } = useFirebase();
+            const [aiAnalysis, setAiAnalysis] = useState("");
+            const [isAiLoading, setIsAiLoading] = useState(false);
+
+            const getAiAnalysis = async () => {
+                setIsAiLoading(true);
+                setAiAnalysis("");
+
+                const prompt = `
+                                Provide a concise technical analysis for the stock ${data.section2.tickerSymbol} based ONLY on the following data:
+                                - Current Price: ${data.section3.currentPrice}
+                                - RSI(14): ${data.section4.rsi}
+                                - MACD Line: ${data.section4.macd}, Signal Line: ${data.section4.macdSignal}
+                                - Moving Averages: MA20=${data.section4.ma20}, MA50=${data.section4.ma50}, MA200=${data.section4.ma200}
+                                - Key Support: ${data.section4.supportLevels}
+                                - Key Resistance: ${data.section4.resistanceLevels}
+                                - Price vs Pivot: ${data.section5.priceVsPivot}
+                                - Price Action Pattern: ${data.section5.priceAction}
+                                
+                                Structure your response in three short paragraphs in English:
+                                1.  **Overall Assessment:** Current technical posture (e.g., bullish, bearish, neutral).
+                                2.  **Key Signals:** Highlight the most significant bullish and bearish signals.
+                                3.  **Potential Scenarios & Tactical Recommendations:** Describe potential bullish and bearish scenarios and provide a concise tactical recommendation.
+                            `;
+                
+                try {
+                    let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                    const payload = { contents: chatHistory };
+                    const apiKey = "";
+                    const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=" + apiKey;
+                    
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('API call failed with status: ' + response.status);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        setAiAnalysis(text);
+                        // Save analysis to Firebase
+                        if (isAuthReady && db && userId && currentTradeId) {
+                            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                            const analysisCollectionRef = firebase.collection(db, `artifacts/${appId}/users/${userId}/ai_analyses`);
+                            await firebase.addDoc(analysisCollectionRef, {
+                                tradeId: currentTradeId,
+                                ticker: data.section2.tickerSymbol,
+                                date: new Date().toISOString(),
+                                analysis: text,
+                                inputData: { ...data.section3, ...data.section4, ...data.section5 },
+                                feedback: null,
+                                feedbackNotes: ""
+                            });
+                        }
+                    } else {
+                        setAiAnalysis("Could not retrieve analysis. The model's response was empty.");
+                    }
+                } catch (error) {
+                    console.error("Error fetching AI analysis:", error);
+                    setAiAnalysis('An error occurred while fetching the analysis: ' + error.message);
+                } finally {
+                    setIsAiLoading(false);
+                }
+            };
+
+            return (
+                <Section title="🤖 AI Technical Analysis">
+                    <div className="ai-analysis-section col-span-full p-6 rounded-lg">
+                        <p className="text-sm text-gray-400 mb-4">Get a real-time technical analysis of the current stock, based on the data you entered. The analysis is generated by an advanced AI model trained on financial analysis principles.</p>
+                        <button onClick={getAiAnalysis} disabled={isAiLoading || !data.section2.tickerSymbol} className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-200 flex items-center justify-center disabled:opacity-50 min-h-[44px]">
+                            <i className="fas fa-robot mr-2"></i> {isAiLoading ? 'Analyzing...' : 'Generate AI Analysis'}
+                        </button>
+                        <div className={`ai-analysis-output mt-4 p-4 rounded-md min-h-[100px] ${isAiLoading ? 'loading' : ''} whitespace-pre-wrap`}>
+                            {aiAnalysis}
+                        </div>
+                    </div>
+                </Section>
+            );
+        };
+
+        const AiRiskAdvisor = ({ riskData }) => {
+            const [advice, setAdvice] = useState("");
+            const [isLoading, setIsLoading] = useState(false);
+
+            const getRiskAdvice = async () => {
+                setIsLoading(true);
+                setAdvice("");
+
+                const sectorConcentrationString = Object.entries(riskData.sectorConcentration)
+                    .map(([sector, risk]) => `${sector}: $${risk.toFixed(2)}`)
+                    .join(', ');
+
+                const prompt = `
+                    Act as an AI Risk Advisor for a trading portfolio. Based on the following data, provide a concise risk analysis and actionable recommendations in English.
+
+                    **Portfolio Risk Data:**
+                    - Total Financial Risk on Open Trades: $${riskData.totalRiskExposure.toFixed(2)}
+                    - Number of Open Trades: ${riskData.openTradesCount}
+                    - Risk Concentration by Sector: ${sectorConcentrationString || 'None'}
+
+                    **Your Task:**
+                    Generate a response in three short, clear paragraphs in English:
+                    1.  **Overall Risk Profile:** Give a brief summary of the current risk level (e.g., low, moderate, high, highly concentrated).
+                    2.  **Key Observations & Warnings:** Point out the most significant risk factors. Is the total risk high? Is there a dangerous concentration in one sector?
+                    3.  **Actionable Recommendations:** Provide 1-2 clear, simple recommendations to mitigate the identified risks (e.g., "Consider reducing exposure in the [Sector Name] sector," or "Review open positions to ensure risk levels are acceptable.").
+                `;
+                
+                try {
+                     let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                    const payload = { contents: chatHistory };
+                    const apiKey = "";
+                    const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=" + apiKey;
+                    
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) throw new Error(`API Error: ${response.status}`);
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        setAdvice(text);
+                    } else {
+                        setAdvice("Could not retrieve risk advice at this time.");
+                    }
+                } catch (error) {
+                    console.error("Error fetching AI risk advice:", error);
+                    setAdvice("An error occurred while fetching risk advice: " + error.message);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
+            return (
+                 <Section title="🛡️ AI Risk Advisor">
+                    <div className="ai-analysis-section col-span-full p-6 rounded-lg">
+                        <p className="text-sm text-gray-400 mb-4">Analyze your portfolio's overall risk exposure based on all your open trades. The AI will provide insights into risk concentration and suggest potential actions.</p>
+                        <button onClick={getRiskAdvice} disabled={isLoading || riskData.openTradesCount === 0} className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-200 flex items-center justify-center disabled:opacity-50 min-h-[44px]">
+                            <i className="fas fa-shield-alt mr-2"></i> {isLoading ? 'Analyzing Risk...' : 'Generate Portfolio Risk Analysis'}
+                        </button>
+                        <div className={`ai-analysis-output mt-4 p-4 rounded-md min-h-[100px] ${isLoading ? 'loading' : ''} whitespace-pre-wrap`}>
+                            {advice}
+                        </div>
+                    </div>
+                </Section>
+            );
+        };
+
+        const AutocompleteInput = ({ label, value, onValueChange, filterKey, onBlur, onInfoClick, paramKey, children }) => {
+            const { setData, setIsDataDirty, gicsDatabase } = useData();
+            const [inputValue, setInputValue] = useState(value);
+            const [suggestions, setSuggestions] = useState([]);
+            const [isFocused, setIsFocused] = useState(false);
+
+            useEffect(() => {
+                setInputValue(value);
+            }, [value]);
+
+            const handleFocus = () => {
+                setIsFocused(true);
+                if (inputValue === '') {
+                    setSuggestions(gicsDatabase.slice(0, 100));
+                }
+            };
+
+            const onInputChange = (e) => {
+                const newValue = e.target.value;
+                setInputValue(newValue);
+                onValueChange(newValue);
+
+                if (newValue.length > 0) {
+                    const filtered = gicsDatabase.filter(stock =>
+                        stock[filterKey] && String(stock[filterKey]).toLowerCase().includes(newValue.toLowerCase())
+                    );
+                    setSuggestions(filtered.slice(0, 100));
+                } else {
+                    setSuggestions(gicsDatabase.slice(0, 100));
+                }
+            };
+
+            const onSuggestionClick = (stock) => {
+                setData(prevData => ({
+                    ...prevData,
+                    section2: {
+                        ...prevData.section2,
+                        stockName: stock.Name,
+                        tickerSymbol: stock.Ticker,
+                        sector: stock.Sector,
+                        industry: stock.Industry,
+                    }
+                }));
+                setIsDataDirty(true);
+                setSuggestions([]);
+                setIsFocused(false);
+            };
+
+            return (
+                <InfoRow label={label} paramKey={paramKey} onInfoClick={onInfoClick}>
+                    <div className="relative w-full sm:w-auto flex items-center">
+                        <input
+                            type="text"
+                            value={inputValue}
+                            onChange={onInputChange}
+                            onFocus={handleFocus}
+                            onBlur={() => setTimeout(() => { setIsFocused(false); if(onBlur) onBlur(); }, 200)}
+                            className="w-full"
+                        />
+                        {children}
+                        {isFocused && suggestions.length > 0 && (
+                            <div className="autocomplete-dropdown absolute top-full left-0 right-0 max-h-48 overflow-y-auto mt-1 rounded-md">
+                                {suggestions.map((stock, index) => (
+                                    <div
+                                        key={`${stock.Ticker}-${stock.Name}-${index}`}
+                                        className="autocomplete-item p-2 cursor-pointer text-sm"
+                                        onMouseDown={() => onSuggestionClick(stock)}
+                                    >
+                                        {stock[filterKey]} ({stock.Ticker})
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </InfoRow>
+            );
+        };
+        
+        const DatabaseManager = () => {
+            const { gicsDatabase, setGicsDatabase } = useData();
+            const fileInputRef = useRef(null);
+            const [uploadStatus, setUploadStatus] = useState('');
+
+            const handleFileUpload = (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+                setUploadStatus('Processing file...');
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const text = e.target.result;
+                    processCSV(text);
+                };
+                    reader.onerror = () => {
+                        setUploadStatus('Error reading file.');
+                    };
+                reader.readAsText(file);
+            };
+
+            const processCSV = (csvText) => {
+                const lines = csvText.split('\n').filter(line => line.trim() !== '');
+                if (lines.length < 2) {
+                    setUploadStatus("Error: CSV file is empty or has no data rows.");
+                    return;
+                }
+                
+                const headers = lines[0].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g).map(v => v.replace(/"/g, '').trim());
+                
+                const tickerIndex = headers.indexOf('Ticker');
+                const nameIndex = headers.indexOf('Stock Name');
+                const sectorIndex = headers.indexOf('Sector');
+                const industryIndex = headers.indexOf('Industry');
+
+                if (tickerIndex === -1) {
+                    setUploadStatus("Error: CSV must contain a 'Ticker' column.");
+                    return;
+                }
+                
+                const newStocks = lines.slice(1).map(line => {
+                    const values = line.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g).map(v => v.replace(/"/g, '').trim());
+                    return {
+                        Ticker: values[tickerIndex] || '',
+                        Name: nameIndex !== -1 ? values[nameIndex] : '',
+                        Sector: sectorIndex !== -1 ? values[sectorIndex] : '',
+                        Industry: industryIndex !== -1 ? values[industryIndex] : '',
+                    };
+                }).filter(stock => stock.Ticker);
+
+                const tickerMap = new Map(gicsDatabase.map(stock => [stock.Ticker, stock]));
+                let addedCount = 0;
+                newStocks.forEach(stock => {
+                    if (!tickerMap.has(stock.Ticker)) {
+                        addedCount++;
+                    }
+                    tickerMap.set(stock.Ticker, stock);
+                });
+
+                const updatedDatabase = Array.from(tickerMap.values());
+                setGicsDatabase(updatedDatabase);
+                
+                setUploadStatus(`Database updated. ${addedCount} new stock(s) added. Total stocks: ${updatedDatabase.length}`);
+
+                updatedDatabase.forEach(stock => {
+                    if (!stock.Name || !stock.Sector || !stock.Industry) {
+                        console.log(`Enrichment needed for ${stock.Ticker}: Missing data would be fetched from a network source here.`);
+                    }
+                });
+            };
+
+            return (
+                <Section title="Database Management">
+                    <InfoSectionCard icon="fa-database" title="Data Enrichment">
+                        <div className="p-2 text-center bg-gray-800 rounded-md mb-4">
+                            <p className="text-lg">Stocks in GICS Database: <span className="font-bold text-accent-color-2">{gicsDatabase.length}</span></p>
+                        </div>
+                        <p className="text-sm text-gray-400 mb-4">
+                            Upload a CSV file with a list of stocks to expand the database. The system will de-duplicate and attempt to auto-complete missing information. The CSV must contain the following columns: <b>Ticker, Stock Name, Sector, Industry</b>.
+                        </p>
+                        <input 
+                            type="file" 
+                            ref={fileInputRef} 
+                            onChange={handleFileUpload} 
+                            className="hidden" 
+                            accept=".csv" 
+                        />
+                        <button 
+                            onClick={() => fileInputRef.current.click()}
+                            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-all duration-200 min-h-[44px]">
+                            <i className="fas fa-file-csv mr-2"></i> Upload Stocks (CSV)
+                        </button>
+                        {uploadStatus && <p className="text-sm text-center mt-4 text-teal-400">{uploadStatus}</p>}
+                    </InfoSectionCard>
+                </Section>
+            );
+        };
+
+
+        const Modal = ({ title, content, onClose, modalRef }) => {
+            return (
+                <div ref={modalRef} className="modal-backdrop" onClick={onClose}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <h2 className="text-2xl font-bold text-teal-400 mb-4">{title}</h2>
+                        <div className="text-gray-300 space-y-3">{content}</div>
+                        <button onClick={onClose} className="mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg">Close</button>
+                    </div>
+                </div>
+            );
+        };
+        
+        const ExportModal = ({ onClose }) => {
+            const { exportAsPng, exportAsPdf } = useFirebase();
+            const modalRef = useRef(null);
+            const allSections = [
+                "System Control & I/O", "🚨 Version Control & Recovery", "🤖 AI Technical Analysis",
+                "📊 Graphic Displays", "✅ Step 1: Account Status – My Investment Portfolio",
+                "✅ Step 2: Stock Analysis – Company Profile", "Database Management",
+                "✅ Step 3: Market Movement – Market Data", "✅ Step 4: Technical Indicators – Your Trading Toolkit",
+                "✅ Step 5: Chart Levels & Patterns – Strategic Insights", "✅ Step 6: Fundamental Analysis – The Company’s Core Health",
+                "✅ Step 7: Risk & Sentiment – Market Undercurrents", "✅ Step 8: 5-Step Trade Management Plan"
+            ];
+            const [selectedSections, setSelectedSections] = useState(allSections);
+
+            const handleToggle = (section) => {
+                setSelectedSections(prev => 
+                    prev.includes(section) ? prev.filter(s => s !== section) : [...prev, section]
+                );
+            };
+            
+            const handleExportPdf = () => {
+                exportAsPdf(selectedSections, modalRef);
+                onClose();
+            };
+
+            const handleExportPng = () => {
+                exportAsPng(selectedSections, modalRef);
+                onClose();
+            };
+
+            const content = (
+                <>
+                    <p>Select the sections you want to include in the export.</p>
+                    <div className="grid grid-cols-2 gap-2 mt-4">
+                        {allSections.map(section => (
+                            <label key={section} className="flex items-center space-x-2">
+                                <input type="checkbox" checked={selectedSections.includes(section)} onChange={() => handleToggle(section)} />
+                                <span>{section}</span>
+                            </label>
+                        ))}
+                    </div>
+                    <div className="flex gap-4 mt-6">
+                        <button onClick={handleExportPdf} className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg">Generate PDF</button>
+                        <button onClick={handleExportPng} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg">Generate PNG</button>
+                    </div>
+                </>
+            );
+
+            return <Modal title="Custom Export" content={content} onClose={onClose} modalRef={modalRef} />;
+        };
+
+        const BackupKitModal = ({ onClose, restoreCode, importCode, setImportCode, generateRestoreCode, importFromCode, copyToClipboard }) => {
+            const { exportDataAsJson, exportAsPng, exportSourceCode } = useFirebase();
+            const modalRef = useRef(null);
+
+            const content = (
+                <div>
+                    <p className="mb-4">Here are all the assets for a full backup of your project. Use the buttons to save each asset.</p>
+                    <div className="space-y-4">
+                        <div className="bg-gray-800 p-4 rounded-lg">
+                            <h4 className="font-bold mb-2 text-lg text-teal-400">File Backups</h4>
+                            <div className="flex justify-between items-center mb-2">
+                                <div>
+                                    <h5 className="font-semibold">Source Code (HTML)</h5>
+                                    <p className="text-sm text-gray-400">The complete code for this application.</p>
+                                </div>
+                                <button onClick={exportSourceCode} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 rounded-lg text-sm">Download HTML</button>
+                            </div>
+                            <div className="flex justify-between items-center mb-2">
+                                <div>
+                                    <h5 className="font-semibold">Dashboard Data (JSON)</h5>
+                                    <p className="text-sm text-gray-400">All your current trade analysis data.</p>
+                                </div>
+                                <button onClick={exportDataAsJson} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 rounded-lg text-sm">Download JSON</button>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <div>
+                                    <h5 className="font-semibold">Visual Snapshot (PNG)</h5>
+                                    <p className="text-sm text-gray-400">A screenshot of the current dashboard view.</p>
+                                </div>
+                                <button onClick={() => exportAsPng([], modalRef)} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 rounded-lg text-sm">Download PNG</button>
+                            </div>
+                        </div>
+                        
+                        <div className="bg-gray-800 p-4 rounded-lg">
+                                <h4 className="font-bold mb-2 text-lg text-teal-400">Code-Based Backup & Restore</h4>
+                                <button onClick={generateRestoreCode} className="w-full mb-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg">Generate Restore Code</button>
+                                {restoreCode && (
+                                    <div className="space-y-2">
+                                        <label className="text-sm text-gray-400">Your Restore Code:</label>
+                                        <div className="flex gap-2">
+                                            <textarea readOnly value={restoreCode} className="w-full flex-grow bg-gray-900 border border-gray-600 rounded-md p-2 text-xs" rows="3"></textarea>
+                                            <button onClick={() => copyToClipboard(restoreCode)} className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-3 rounded-lg text-sm">Copy</button>
+                                        </div>
+                                    </div>
+                                )}
+                                <div className="space-y-2 mt-4">
+                                    <label className="text-sm text-gray-400">Paste Restore Code here:</label>
+                                    <textarea value={importCode} onChange={(e) => setImportCode(e.target.value)} className="w-full bg-gray-900 border border-gray-600 rounded-md p-2 text-xs" rows="3"></textarea>
+                                    <button onClick={importFromCode} className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg">Restore from Code</button>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            return <Modal title="Full Backup Kit" content={content} onClose={onClose} modalRef={modalRef} />;
+        };
+        
+        const AiTrainingCenterModal = ({ onClose }) => {
+            // Mock data for now. In a real app, this would come from Firebase.
+            const mockAnalyses = [
+                { id: 1, ticker: 'AAPL', date: '2025-08-10', summary: 'Overall Assessment: Bullish. Key Signals: Price above MA50 and MA200...', feedback: null },
+                { id: 2, ticker: 'GOOG', date: '2025-08-09', summary: 'Overall Assessment: Neutral. Key Signals: RSI near 50, MACD crossover imminent...', feedback: null },
+                { id: 3, ticker: 'TSLA', date: '2025-08-08', summary: 'Overall Assessment: Bearish. Key Signals: Price broke below key support...', feedback: null },
+            ];
+            
+            const [analyses, setAnalyses] = useState(mockAnalyses);
+            const modalRef = useRef(null);
+
+            const handleFeedback = (id, feedback) => {
+                // This is where you would update the state and eventually send to Firebase
+                console.log(`Feedback for analysis ${id}: ${feedback}`);
+            };
+
+            const content = (
+                <div>
+                    <p className="mb-4 text-gray-400">Review past AI analyses and provide feedback to improve the model's accuracy over time. This data will be used for future fine-tuning.</p>
+                    <div className="space-y-4">
+                        {analyses.map(analysis => (
+                            <div key={analysis.id} className="bg-gray-800 p-4 rounded-lg">
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <h4 className="font-bold text-lg text-teal-400">{analysis.ticker} - <span className="text-sm font-normal text-gray-400">{analysis.date}</span></h4>
+                                        <p className="text-sm text-gray-300 mt-1">{analysis.summary}</p>
+                                    </div>
+                                    <div className="flex gap-2 flex-shrink-0 ml-4">
+                                        <button onClick={() => handleFeedback(analysis.id, 'Accurate')} className="bg-green-600 hover:bg-green-700 text-white font-semibold py-1 px-3 rounded-lg text-xs">Accurate</button>
+                                        <button onClick={() => handleFeedback(analysis.id, 'Inaccurate')} className="bg-red-600 hover:bg-red-700 text-white font-semibold py-1 px-3 rounded-lg text-xs">Inaccurate</button>
+                                    </div>
+                                </div>
+                                <div className="mt-3">
+                                    <textarea placeholder="Add optional feedback notes..." className="w-full text-xs" rows="2"></textarea>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="flex justify-end mt-4">
+                        <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg">Submit Feedback</button>
+                    </div>
+                </div>
+            );
+
+            return <Modal title="AI Training Center" content={content} onClose={onClose} modalRef={modalRef} />;
+        };
+
+        const KnowledgeBaseModal = ({ onClose }) => {
+            const [files, setFiles] = useState([]);
+            const { db, userId, isAuthReady } = useFirebase();
+            const [selectedFileId, setSelectedFileId] = useState(null);
+            const [isAnalyzing, setIsAnalyzing] = useState(false);
+            const fileInputRef = useRef(null);
+            const modalRef = useRef(null);
+
+            const selectedFile = files.find(f => f.id === selectedFileId);
+
+            useEffect(() => {
+                if (!isAuthReady || !db || !userId) return;
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const kbCollectionRef = firebase.collection(db, `artifacts/${appId}/users/${userId}/knowledge_base`);
+                const q = firebase.query(kbCollectionRef, firebase.orderBy('uploadedAt', 'desc'));
+
+                const unsubscribe = firebase.onSnapshot(q, (querySnapshot) => {
+                    const fetchedFiles = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    setFiles(fetchedFiles);
+                });
+
+                return () => unsubscribe();
+            }, [isAuthReady, db, userId]);
+
+            const fileToGenerativePart = async (file) => {
+                const base64EncodedDataPromise = new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result.split(',')[1]);
+                    reader.readAsDataURL(file);
+                });
+                return {
+                    inlineData: { data: await base64EncodedDataPromise, mimeType: file.type },
+                };
+            };
+            
+            const processFile = async (file) => {
+                if (!isAuthReady || !db || !userId) return;
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const kbCollectionRef = firebase.collection(db, `artifacts/${appId}/users/${userId}/knowledge_base`);
+                
+                const fileData = { 
+                    name: file.name, 
+                    status: 'Processing', 
+                    size: `${(file.size / 1024).toFixed(2)} KB`,
+                    uploadedAt: new Date().toISOString(),
+                    processedContent: null,
+                    analysis: null
+                };
+
+                const docRef = await firebase.addDoc(kbCollectionRef, fileData);
+
+                try {
+                    let processedContent = `File type (${file.type}) is not supported for direct content extraction. Using filename as content.`;
+                    if (file.type.startsWith('image/')) {
+                        const imagePart = await fileToGenerativePart(file);
+                        const payload = { contents: [{ parts: [{ text: "Describe this image in detail from a financial or technical analysis perspective." }, imagePart] }] };
+                        const apiKey = "";
+                        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+                        const result = await response.json();
+                        processedContent = result.candidates[0].content.parts[0].text;
+                    }
+                    
+                    await firebase.updateDoc(docRef, { status: 'Completed', processedContent: processedContent });
+
+                } catch (error) {
+                    console.error("Error processing file:", error);
+                    await firebase.updateDoc(docRef, { status: 'Error' });
+                }
+            };
+            
+            const handleFiles = async (filesToProcess) => {
+                for (const file of filesToProcess) {
+                    await processFile(file);
+                }
+            };
+
+            const handleFileDrop = (e) => {
+                e.preventDefault();
+                const droppedFiles = Array.from(e.dataTransfer.files);
+                handleFiles(droppedFiles);
+            };
+
+            const handleFileSelect = (e) => {
+                const selectedFiles = Array.from(e.target.files);
+                handleFiles(selectedFiles);
+            };
+
+            const handleAnalyzeFile = async (file) => {
+                if (!file.processedContent) {
+                    alert("File has not been processed yet or content could not be extracted.");
+                    return;
+                }
+                setIsAnalyzing(true);
+                setSelectedFileId(file.id);
+
+                const prompt = `
+                            Based on the following content extracted from a user-uploaded file, provide a structured analysis.
+                            Content: "${file.processedContent}"
+
+                            Generate a response in the following structured format, in English:
+                            1.  **Meaning/Signal:** What is the primary technical meaning or signal from this content?
+                            2.  **Recommended Action:** Based on the signal, what is a recommended action or response?
+                            3.  **Examples/Important Notes:** Provide essential examples or important notes related to this signal.
+                            4.  **Possible State:** What are the possible scenarios or states that could follow?
+                            5.  **Why Check This Parameter:** Explain the contribution of this parameter/signal to the overall analysis.
+                            6.  **How to Find Data:** How can one typically find or verify this data?
+                        `;
+
+                try {
+                    let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                    const payload = { contents: chatHistory };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                    
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                        const fileDocRef = firebase.doc(db, `artifacts/${appId}/users/${userId}/knowledge_base`, file.id);
+                        await firebase.updateDoc(fileDocRef, { analysis: text });
+                    } else {
+                        throw new Error("Could not generate analysis.");
+                    }
+                } catch (error) {
+                    console.error("Error analyzing file:", error);
+                    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                    const fileDocRef = firebase.doc(db, `artifacts/${appId}/users/${userId}/knowledge_base`, file.id);
+                    await firebase.updateDoc(fileDocRef, { analysis: "An error occurred during analysis." });
+                } finally {
+                    setIsAnalyzing(false);
+                }
+            };
+            
+            const handleDeleteFile = async (fileId) => {
+                if (confirm("Are you sure you want to delete this file?")) {
+                    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                    const fileDocRef = firebase.doc(db, `artifacts/${appId}/users/${userId}/knowledge_base`, fileId);
+                    await firebase.deleteDoc(fileDocRef);
+                }
+            };
+
+            const content = (
+                <div>
+                    <p className="mb-4 text-gray-400">Upload documents, spreadsheets, presentations, or images to train the AI. The system will extract relevant information to provide richer insights and analysis.</p>
+                    <div 
+                        onDragOver={(e) => e.preventDefault()} 
+                        onDrop={handleFileDrop}
+                        onClick={() => fileInputRef.current.click()}
+                        className="border-2 border-dashed border-gray-500 rounded-lg p-8 text-center cursor-pointer hover:border-teal-400 transition-all"
+                    >
+                        <i className="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                        <p>Drag & drop files here or click to select</p>
+                        <input type="file" multiple ref={fileInputRef} onChange={handleFileSelect} className="hidden" />
+                        <p className="text-xs text-gray-500 mt-2">Supported: DOC, DOCX, XLSX, CSV, PPT, PPS, JPG, PNG</p>
+                    </div>
+                    <div className="mt-6">
+                        <h4 className="font-bold text-lg text-teal-400 mb-2">Uploaded Files</h4>
+                        <div className="w-full overflow-x-auto" style={{maxHeight: '200px'}}>
+                            <table className="w-full text-left text-sm">
+                                <thead>
+                                    <tr className="border-b border-gray-600">
+                                        <th className="p-2">File Name</th>
+                                        <th className="p-2">Size</th>
+                                        <th className="p-2">Status</th>
+                                        <th className="p-2 text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {files.length === 0 ? (
+                                        <tr><td colSpan="4" className="text-center p-4 text-gray-500">No files uploaded yet.</td></tr>
+                                    ) : (
+                                        files.map((file) => (
+                                            <tr key={file.id} className="border-b border-gray-700 hover:bg-gray-700">
+                                                <td className="p-2 font-medium">{file.name}</td>
+                                                <td className="p-2">{file.size}</td>
+                                                <td className="p-2">
+                                                    <span className={`${
+                                                        file.status === 'Completed' ? 'bg-green-500 text-green-900' :
+                                                        file.status === 'Processing' ? 'bg-yellow-500 text-yellow-900' :
+                                                        'bg-red-500 text-red-900'
+                                                    } text-xs font-semibold mr-2 px-2.5 py-0.5 rounded`}>{file.status}</span>
+                                                </td>
+                                                <td className="p-2 text-center">
+                                                    <button onClick={() => handleAnalyzeFile(file)} disabled={file.status !== 'Completed' || (isAnalyzing && selectedFileId === file.id)} className="text-teal-400 hover:text-teal-200 text-xs mr-4 disabled:opacity-50">
+                                                        {isAnalyzing && selectedFileId === file.id ? 'Analyzing...' : 'Analyze'}
+                                                    </button>
+                                                    <button onClick={() => handleDeleteFile(file.id)} className="text-red-400 hover:text-red-200 text-xs">
+                                                        <i className="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {selectedFile && (
+                        <div className="mt-6">
+                            <h4 className="font-bold text-lg text-teal-400 mb-2">Analysis for: {selectedFile.name}</h4>
+                            <div className={`ai-analysis-output p-4 rounded-md min-h-[100px] ${isAnalyzing ? 'loading' : ''}`}>
+                                {selectedFile.analysis && <div className="whitespace-pre-wrap">{selectedFile.analysis}</div>}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+            return <Modal title="Knowledge Base & AI Training" content={content} onClose={onClose} modalRef={modalRef} />;
+        };
+
+        //======================================================================
+        //  6. API & UTILITY FUNCTIONS
+        //======================================================================
+        const findGicsClassification = (ticker, gicsDatabase) => {
+            const stock = gicsDatabase.find(item => item.Ticker.toLowerCase() === ticker.toLowerCase());
+            if (stock) {
+                return { sector: stock.Sector, industry: stock.Industry };
+            }
+            return { sector: '', industry: '' };
+        };
+
+        const fetchApiData = async (ticker, apiKey, setData, setApiStatus, setIsLiveDataSet, gicsDatabase) => {
+            if (!ticker) {
+                setApiStatus({ loading: false, error: "Ticker symbol is empty." });
+                return;
+            }
+            if (!apiKey) {
+                setApiStatus({ loading: false, error: "Alpha Vantage API Key is missing." });
+                return;
+            }
+            setApiStatus({ loading: true, error: null });
+
+            const functions = ['GLOBAL_QUOTE', 'RSI', 'SMA', 'MACD', 'VWAP', 'ATR', 'OVERVIEW', 'TIME_SERIES_DAILY', 'CURRENCY_EXCHANGE_RATE'];
+            const urls = functions.map(func => {
+                if (func === 'CURRENCY_EXCHANGE_RATE') {
+                    return `https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=USD&to_currency=ILS&apikey=${apiKey}`;
+                }
+                return `https://www.alphavantage.co/query?function=${func}&symbol=${ticker}&interval=daily&time_period=14&series_type=close&apikey=${apiKey}`
+            });
+
+            try {
+                const responses = await Promise.all(urls.map(url => fetch(url)));
+                const results = await Promise.all(responses.map(res => res.json()));
+
+                const [quote, rsi, sma, macd, vwap, atr, overview, dailySeries, exchangeRate] = results;
+                
+                if (quote['Error Message'] || !quote['Global Quote'] || Object.keys(quote['Global Quote']).length === 0) {
+                    throw new Error(quote['Note'] || 'Invalid Ticker or API limit reached.');
+                }
+
+                const globalQuote = quote['Global Quote'];
+                const { sector, industry } = findGicsClassification(ticker, gicsDatabase);
+
+                const lastRsi = rsi['Technical Analysis: RSI'] ? Object.values(rsi['Technical Analysis: RSI'])[0]['RSI'] : 'N/A';
+                const lastSma200 = sma['Technical Analysis: SMA'] ? Object.values(sma['Technical Analysis: SMA'])[0]['SMA'] : 'N/A';
+                const lastMacd = macd['Technical Analysis: MACD'] ? Object.values(macd['Technical Analysis: MACD'])[0] : {};
+                const lastVwap = vwap['Technical Analysis: VWAP'] ? Object.values(vwap['Technical Analysis: VWAP'])[0]['VWAP'] : 'N/A';
+                const lastAtr = atr['Technical Analysis: ATR'] ? Object.values(atr['Technical Analysis: ATR'])[0]['ATR'] : 'N/A';
+                const currentUSDRate = exchangeRate['Realtime Currency Exchange Rate'] ? parseFloat(exchangeRate['Realtime Currency Exchange Rate']['5. Exchange Rate']) : null;
+
+
+                let dailyPivot = 0;
+                if (dailySeries && dailySeries['Time Series (Daily)']) {
+                    const dates = Object.keys(dailySeries['Time Series (Daily)']);
+                    if (dates.length > 1) {
+                        const previousDayData = dailySeries['Time Series (Daily)'][dates[1]];
+                        const prevHigh = parseFloat(previousDayData['2. high']);
+                        const prevLow = parseFloat(previousDayData['3. low']);
+                        const prevClose = parseFloat(previousDayData['4. close']);
+                        dailyPivot = (prevHigh + prevLow + prevClose) / 3;
+                    }
+                }
+
+                setData(prevData => ({
+                    ...prevData,
+                    section1: {
+                        ...prevData.section1,
+                        currentUSDRate: currentUSDRate || prevData.section1.currentUSDRate,
+                    },
+                    section2: {
+                        ...prevData.section2,
+                        stockName: overview['Name'] || prevData.section2.stockName,
+                        sector: overview['Sector'] || sector,
+                        industry: overview['Industry'] || industry,
+                        marketCap: overview['MarketCapitalization'] || prevData.section2.marketCap
+                    },
+                    section3: {
+                        ...prevData.section3,
+                        currentPrice: parseFloat(globalQuote['05. price']),
+                        dailyRange: `${parseFloat(globalQuote['04. low'])} - ${parseFloat(globalQuote['03. high'])}`,
+                        prevDayRange: `Close: ${parseFloat(globalQuote['08. previous close'])}`,
+                        currentVolume: globalQuote['06. volume'],
+                    },
+                    section4: {
+                        ...prevData.section4,
+                        rsi: parseFloat(lastRsi),
+                        ma200: parseFloat(lastSma200),
+                        macd: parseFloat(lastMacd['MACD']),
+                        macdSignal: parseFloat(lastMacd['MACD_Signal']),
+                        macdHistogram: parseFloat(lastMacd['MACD_Hist']),
+                        vwap: parseFloat(lastVwap),
+                        atr: parseFloat(lastAtr),
+                    },
+                    section5: {
+                        ...prevData.section5,
+                        dailyPivot: dailyPivot.toFixed(2),
+                    },
+                    section6: {
+                        ...prevData.section6,
+                        revenue: overview['RevenueTTM'],
+                        eps: parseFloat(overview['EPS']),
+                        peRatio: parseFloat(overview['PERatio']),
+                        pbRatio: parseFloat(overview['PriceToBookRatio']),
+                        dividend: overview['DividendYield'],
+                        analystForecasts: overview['AnalystTargetPrice'],
+                    },
+                    section8: {
+                        ...prevData.section8,
+                        step1: {
+                            ...prevData.section8.step1,
+                            currentPrice: parseFloat(globalQuote['05. price']),
+                        }
+                    }
+                }));
+                
+                setIsLiveDataSet(true);
+                setApiStatus({ loading: false, error: null });
+
+            } catch (error) {
+                console.error("API Fetch Error:", error);
+                setApiStatus({ loading: false, error: error.message });
+            }
+        };
+
+
+        //======================================================================
+        //  7. MAIN APP COMPONENT
+        //======================================================================
+        
+        const App = () => {
+            const { data, setData, handleNestedChange, apiStatus, setApiStatus, gicsDatabase, isLiveDataSet, setIsLiveDataSet, dataEntryMode, setDataEntryMode, tradeLog } = useData();
+            const { userId, db, isAuthReady } = useFirebase();
+            const [modalInfo, setModalInfo] = useState(null);
+            const [tacticalRecommendations, setTacticalRecommendations] = useState([]);
+            const [alphaVantageKey, setAlphaVantageKey] = useState('U4464522W6V69P5G');
+
+            const calculatedData = useMemo(() => {
+                const s1 = data.section1;
+                const initialUSD = (s1.initialPortfolioValueILS > 0 && s1.initialUSDRate > 0) ? (s1.initialPortfolioValueILS / s1.initialUSDRate) : parseFloat(s1.initialPortfolioValueUSD) || 0;
+                const currentUSD = (s1.currentPortfolioValueILS > 0 && s1.currentUSDRate > 0) ? (s1.currentPortfolioValueILS / s1.currentUSDRate) : parseFloat(s1.currentPortfolioValueUSD) || 0;
+                const totalPL = (initialUSD > 0 && currentUSD > 0) ? (currentUSD - initialUSD) : parseFloat(s1.totalPLUSD) || 0;
+                const totalPLPercentage = (initialUSD > 0) ? (totalPL / initialUSD * 100) : 0;
+                
+                return {
+                    initialPortfolioValueUSD: initialUSD.toFixed(2),
+                    currentPortfolioValueUSD: currentUSD.toFixed(2),
+                    totalPLUSD: totalPL.toFixed(2),
+                    totalPLPercentage: totalPLPercentage.toFixed(2)
+                };
+            }, [data.section1.initialPortfolioValueILS, data.section1.initialUSDRate, data.section1.currentPortfolioValueILS, data.section1.currentUSDRate]);
+
+            const displayData = useMemo(() => {
+                const newData = JSON.parse(JSON.stringify(data));
+                newData.section1 = { ...newData.section1, ...calculatedData };
+                
+                const { section1, section3, section4, section5, section8 } = newData;
+
+                if (section3.currentPrice > 0) {
+                    if (section4.ma200) section4.maMeaning = section3.currentPrice > section4.ma200 ? 'Bullish Long-Term' : 'Bearish Long-Term';
+                    if (section4.ma50) section4.maAction = section3.currentPrice > section4.ma50 ? 'Consider Buy' : 'Consider Sell';
+                    if (section4.atr) section4.atrPercent = ((section4.atr / section3.currentPrice) * 100).toFixed(2);
+                }
+                if (section4.macd && section4.macdSignal) {
+                    const isAbove = section4.macd > section4.macdSignal;
+                    section4.macdMeaning = isAbove ? 'Bullish Momentum' : 'Bearish Momentum';
+                    section4.macdAction = isAbove ? 'Buy Signal' : 'Sell Signal';
+                }
+                if (section5.dailyPivot > 0 && section3.currentPrice > 0) {
+                    const isAbove = section3.currentPrice > section5.dailyPivot;
+                    section5.priceVsPivot = isAbove ? 'Above Pivot' : 'Below Pivot';
+                    section5.pivotAction = isAbove ? 'Potential Strength' : 'Potential Weakness';
+                }
+
+                const entry = parseFloat(section8.step1.entryPrice) || 0;
+                const stop = parseFloat(section8.step1.stopLoss) || 0;
+                const units = parseFloat(section8.step1.units) || 0;
+                if (entry > 0 && stop > 0) {
+                    const riskPerUnit = entry - stop;
+                    section8.step2.potentialRiskUnit = riskPerUnit.toFixed(2);
+                    if (units > 0) {
+                        const financialRisk = riskPerUnit * units;
+                        section8.step2.financialRisk = financialRisk.toFixed(2);
+                        const totalCost = units * entry;
+                        section8.step2.totalCost = totalCost.toFixed(2);
+                        section8.step2.remainingBalance = (section1.buyingPowerUSD - totalCost).toFixed(2);
+                    }
+                    const tp1 = parseFloat(section8.step3.tp1) || 0;
+                    if (tp1 > entry && units > 0) {
+                        const profitPotential = (tp1 - entry) * units;
+                        section8.step3.profitPotential1 = profitPotential.toFixed(2);
+                        if (riskPerUnit > 0) {
+                            const totalRisk = riskPerUnit * units;
+                            const riskReward = profitPotential / totalRisk;
+                            section8.step3.riskRewardRatio = `1:${riskReward.toFixed(2)}`;
+                        } else {
+                            section8.step3.riskRewardRatio = 'N/A';
+                        }
+                    }
+                }
+                const closePrice = parseFloat(section8.step4.closePrice) || 0;
+                const fees = parseFloat(section8.step4.fees) || 0;
+                if (closePrice > 0 && entry > 0 && units > 0) {
+                    const financialResult = (closePrice - entry) * units - fees;
+                    section8.step4.financialResult = financialResult.toFixed(2);
+                    const cost = entry * units;
+                    if (cost > 0) {
+                        const roi = (financialResult / cost) * 100;
+                        section8.step4.roi = roi.toFixed(2);
+                    }
+                }
+                
+                return newData;
+            }, [data, calculatedData]);
+
+            useEffect(() => {
+                const recommendations = [];
+                const s4 = displayData.section4;
+                if (s4.maMeaning?.includes('Bullish')) recommendations.push("Price is above MA200, indicating a long-term uptrend.");
+                if (s4.maMeaning?.includes('Bearish')) recommendations.push("Price is below MA200, indicating a long-term downtrend.");
+                if (s4.maAction?.includes('Buy')) recommendations.push("Price is above MA50, consider bullish setups.");
+                if (s4.maAction?.includes('Sell')) recommendations.push("Price is below MA50, consider bearish setups.");
+                if (s4.rsi > 70) recommendations.push("RSI is overbought (>70), caution for potential pullback.");
+                if (s4.rsi < 30) recommendations.push("RSI is oversold (<30), watch for potential reversal.");
+                setTacticalRecommendations(recommendations);
+            }, [displayData.section4.maMeaning, displayData.section4.maAction, displayData.section4.rsi]);
+
+            const riskData = useMemo(() => {
+                const openTrades = tradeLog.filter(t => t.status === 'Open');
+                
+                const totalRiskExposure = openTrades.reduce((acc, trade) => {
+                    const financialRisk = parseFloat(trade.data.section8.step2.financialRisk) || 0;
+                    return acc + financialRisk;
+                }, 0);
+
+                const sectorConcentration = openTrades.reduce((acc, trade) => {
+                    const sector = trade.data.section2.sector || 'Uncategorized';
+                    const risk = parseFloat(trade.data.section8.step2.financialRisk) || 0;
+                    if (!acc[sector]) {
+                        acc[sector] = 0;
+                    }
+                    acc[sector] += risk;
+                    return acc;
+                }, {});
+
+                const sortedSectors = Object.entries(sectorConcentration)
+                    .sort(([, a], [, b]) => b - a)
+                    .reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+
+                return {
+                    totalRiskExposure,
+                    sectorConcentration: sortedSectors,
+                    openTradesCount: openTrades.length
+                };
+            }, [tradeLog]);
+
+            useEffect(() => {
+                const fetchApiKey = async () => {
+                    if (isAuthReady && db && userId) {
+                         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                        const settingsDocRef = firebase.doc(db, `artifacts/${appId}/users/${userId}/settings/alphaVantage`);
+                        const docSnap = await firebase.getDoc(settingsDocRef);
+                        if (docSnap.exists()) {
+                            setAlphaVantageKey(docSnap.data().key || 'U4464522W6V69P5G');
+                        }
+                    }
+                };
+                fetchApiKey();
+            }, [isAuthReady, db, userId]);
+
+            const handleTickerBlur = () => {
+                const { tickerSymbol } = data.section2;
+                const classification = findGicsClassification(tickerSymbol, gicsDatabase);
+                if(classification.sector) {
+                        setData(prevData => ({
+                            ...prevData,
+                            section2: {
+                                ...prevData.section2,
+                                sector: classification.sector,
+                                industry: classification.industry,
+                            }
+                    }));
+                }
+            };
+            
+            const handleInfoClick = (paramKey) => {
+                const info = paramData[paramKey];
+                if(info) {
+                    const content = (
+                        <div>
+                            <p><strong>Definition:</strong> {info.definition}</p>
+                            <p><strong>Usage:</strong> {info.usage}</p>
+                            <p><strong>How to Find:</strong> {info.howTo}</p>
+                        </div>
+                    );
+                    setModalInfo({ title: info.fullName, content });
+                }
+            };
+
+            const getRsiIndicator = () => {
+                const rsi = displayData.section4.rsi;
+                if (!rsi) return null;
+                if (rsi > 70) return <Indicator text="Overbought" colorClass="indicator-red" iconClass="fa-arrow-trend-down" />;
+                if (rsi < 30) return <Indicator text="Oversold" colorClass="indicator-green" iconClass="fa-arrow-trend-up" />;
+                return <Indicator text="Neutral" colorClass="indicator-yellow" />;
+            };
+
+            const getRiskRewardIndicator = () => {
+                const ratio = displayData.section8.step3.riskRewardRatio;
+                if (!ratio || ratio === 'N/A') return null;
+                const ratioValue = parseFloat(ratio.split(':')[1]);
+                if (ratioValue >= 2) return <Indicator text="Favorable" colorClass="indicator-green" />;
+                if (ratioValue < 1) return <Indicator text="Unfavorable" colorClass="indicator-red" />;
+                return <Indicator text="Acceptable" colorClass="indicator-yellow" />;
+            };
+            
+            const getMaMeaningIndicator = () => {
+                const meaning = displayData.section4.maMeaning;
+                if (!meaning) return null;
+                if (meaning.includes('Bullish')) return <Indicator text="Bullish" colorClass="indicator-green" />;
+                if (meaning.includes('Bearish')) return <Indicator text="Bearish" colorClass="indicator-red" />;
+                return null;
+            }
+
+            return (
+                <div className="dashboard-container w-full max-w-7xl p-4 sm:p-8 md:p-10 relative">
+                    {modalInfo && <Modal title={modalInfo.title} content={modalInfo.content} onClose={() => setModalInfo(null)} />}
+                    <Header />
+                    <Breadcrumb />
+                    
+                    <Tabs>
+                        <Tab label="Dashboard" icon="fa-tachometer-alt">
+                            <KpiSection calculatedData={calculatedData} />
+                            <AdvancedRiskModule riskData={riskData} />
+                            <GlobalFilter />
+                            <TradeLogManager />
+                            <Section title="📊 Graphic Displays">
+                               <TradeDistributionChart />
+                               <PortfolioHistoryChart />
+                            </Section>
+                        </Tab>
+                        <Tab label="Trade Analysis" icon="fa-edit">
+                            <Section title="✅ Step 1: Account Status – My Investment Portfolio">
+                                <InfoSectionCard icon="fa-wallet" title="Account Status">
+                                    <InfoRow label='Initial Portfolio Value (ILS):'><input type="number" value={data.section1.initialPortfolioValueILS} onChange={(e) => handleNestedChange('section1.initialPortfolioValueILS', parseFloat(e.target.value))} className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label='Initial USD Rate:'><input type="number" value={data.section1.initialUSDRate} onChange={(e) => handleNestedChange('section1.initialUSDRate', parseFloat(e.target.value))} className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label='Initial Portfolio Value ($):'><input type="text" value={displayData.section1.initialPortfolioValueUSD} readOnly className="w-full sm:w-auto" /></InfoRow>
+                                    <div className="border-t border-gray-700 my-4"></div>
+                                    <InfoRow label='Current Portfolio Value (ILS):'><input type="number" value={data.section1.currentPortfolioValueILS} onChange={(e) => handleNestedChange('section1.currentPortfolioValueILS', parseFloat(e.target.value))} className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label='Current USD Rate:'><input type="number" value={data.section1.currentUSDRate} onChange={(e) => handleNestedChange('section1.currentUSDRate', parseFloat(e.target.value))} className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label='Current Portfolio Value ($):'><input type="text" value={displayData.section1.currentPortfolioValueUSD} readOnly className="w-full sm:w-auto" /></InfoRow>
+                                     <div className="border-t border-gray-700 my-4"></div>
+                                    <InfoRow label='Balance ($):'><input type="number" value={data.section1.balanceUSD} onChange={(e) => handleNestedChange('section1.balanceUSD', parseFloat(e.target.value))} className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label='Balance (ILS):'><input type="number" value={data.section1.balanceILS} onChange={(e) => handleNestedChange('section1.balanceILS', parseFloat(e.target.value))} className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label='Credit Limit:'><input type="number" value={data.section1.creditLimit} onChange={(e) => handleNestedChange('section1.creditLimit', parseFloat(e.target.value))} className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label="Buying Power ($):"><input type="number" value={data.section1.buyingPowerUSD} onChange={(e) => handleNestedChange('section1.buyingPowerUSD', parseFloat(e.target.value))} className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label="Daily P/L ($):"><input type="number" value={data.section1.dailyPLUSD} onChange={(e) => handleNestedChange('section1.dailyPLUSD', parseFloat(e.target.value))} className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label="Total P/L ($):"><input type="text" value={displayData.section1.totalPLUSD} readOnly className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label="P/L %:" indicator={<span className={parseFloat(displayData.section1.totalPLPercentage) >= 0 ? 'text-green-400' : 'text-red-400'}>{displayData.section1.totalPLPercentage}%</span>}>
+                                        <input type="text" value={displayData.section1.totalPLPercentage} readOnly className="w-full sm:w-auto" />
+                                    </InfoRow>
+
+                                </InfoSectionCard>
+                            </Section>
+
+                            <Section title="✅ Step 2: Stock Analysis – Company Profile">
+                                <InfoSectionCard icon="fa-building" title="Stock Details">
+                                    <div className="flex gap-2 mb-4">
+                                        <button 
+                                            onClick={() => setDataEntryMode('manual')}
+                                            className={`w-full py-2 text-sm rounded-md ${dataEntryMode === 'manual' ? 'bg-indigo-600 text-white' : 'bg-gray-600'}`}>
+                                            Manual Mode
+                                        </button>
+                                        <button 
+                                            onClick={() => setDataEntryMode('auto')}
+                                            className={`w-full py-2 text-sm rounded-md ${dataEntryMode === 'auto' ? 'bg-indigo-600 text-white' : 'bg-gray-600'}`}>
+                                            Auto Mode (API)
+                                        </button>
+                                    </div>
+                                    <AutocompleteInput label="Stock Name:" value={data.section2.stockName} onValueChange={(val) => handleNestedChange('section2.stockName', val)} filterKey="Name" onInfoClick={handleInfoClick} paramKey="Stock Name" />
+                                    <AutocompleteInput label="Ticker:" value={data.section2.tickerSymbol} onValueChange={(val) => handleNestedChange('section2.tickerSymbol', val)} filterKey="Ticker" onBlur={handleTickerBlur} onInfoClick={handleInfoClick} paramKey="Ticker">
+                                        <button 
+                                            onClick={() => fetchApiData(data.section2.tickerSymbol, alphaVantageKey, setData, setApiStatus, setIsLiveDataSet, gicsDatabase)} 
+                                            disabled={!data.section2.tickerSymbol || apiStatus.loading}
+                                            className="ml-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-3 rounded-lg shadow-md transition-all duration-200 disabled:opacity-50">
+                                            {apiStatus.loading ? <i className="fas fa-spinner fa-spin"></i> : "Fetch"}
+                                        </button>
+                                    </AutocompleteInput>
+                                    <InfoRow label="Sector:" onInfoClick={handleInfoClick} paramKey="Sector">
+                                        <select value={data.section2.sector} onChange={(e) => handleNestedChange('section2.sector', e.target.value)} className="w-full sm:w-auto">
+                                            <option value="">Select Sector</option>
+                                            {[...new Set(gicsDatabase.map(item => item.Sector))].map(s => <option key={s} value={s}>{s}</option>)}
+                                        </select>
+                                    </InfoRow>
+                                        <InfoRow label="Industry:" onInfoClick={handleInfoClick} paramKey="Industry">
+                                        <select value={data.section2.industry} onChange={(e) => handleNestedChange('section2.industry', e.target.value)} className="w-full sm:w-auto">
+                                            <option value="">Select Industry</option>
+                                            {[...new Set(gicsDatabase.filter(item => item.Sector === data.section2.sector).map(item => item.Industry))].map((industry, index) => <option key={`${industry}-${index}`} value={industry}>{industry}</option>)}
+                                        </select>
+                                    </InfoRow>
+                                </InfoSectionCard>
+                            </Section>
+
+                            <Section title="✅ Step 3: Market Movement – Market Data">
+                                <InfoSectionCard icon="fa-chart-line" title="Market Data">
+                                    <InfoRow label="Current Price:" onInfoClick={handleInfoClick} paramKey="CurrentPrice"><input type="number" readOnly={isLiveDataSet} value={data.section3.currentPrice} onChange={(e) => handleNestedChange('section3.currentPrice', parseFloat(e.target.value))} className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label="Daily Range:" onInfoClick={handleInfoClick} paramKey="DailyRange"><input type="text" readOnly={isLiveDataSet} value={data.section3.dailyRange} onChange={(e) => handleNestedChange('section3.dailyRange', e.target.value)} className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label="Previous Day Range:" onInfoClick={handleInfoClick} paramKey="PrevDayRange"><input type="text" readOnly={isLiveDataSet} value={data.section3.prevDayRange} onChange={(e) => handleNestedChange('section3.prevDayRange', e.target.value)} className="w-full sm:w-auto" /></InfoRow>
+                                </InfoSectionCard>
+                            </Section>
+                            
+                            <Section title="✅ Step 4: 5-Step Trade Management Plan">
+                               <InfoSectionCard icon="fa-tasks" title="Step 1: Define Trade Details">
+                                    <InfoRow label="Status:"><input type="text" value={data.section8.step1.status} onChange={(e) => handleNestedChange('section8.step1.status', e.target.value)} className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label="Purchase Date:"><input type="date" value={data.section8.step1.purchaseDate} onChange={(e) => handleNestedChange('section8.step1.purchaseDate', e.target.value)} className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label="Entry Price:"><input type="number" value={data.section8.step1.entryPrice} onChange={(e) => handleNestedChange('section8.step1.entryPrice', parseFloat(e.target.value))} className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label="Units:"><input type="number" value={data.section8.step1.units} onChange={(e) => handleNestedChange('section8.step1.units', parseFloat(e.target.value))} className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label="Stop Loss:"><input type="number" value={data.section8.step1.stopLoss} onChange={(e) => handleNestedChange('section8.step1.stopLoss', parseFloat(e.target.value))} className="w-full sm:w-auto" /></InfoRow>
+                                </InfoSectionCard>
+                               <InfoSectionCard icon="fa-shield-alt" title="Step 2: Risk Management Plan">
+                                    <InfoRow label="Potential Risk/Unit:"><input type="text" value={displayData.section8.step2.potentialRiskUnit} readOnly className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label="Financial Risk:"><input type="text" value={displayData.section8.step2.financialRisk} readOnly className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label="Total Cost:"><input type="text" value={displayData.section8.step2.totalCost} readOnly className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label="Remaining Balance:"><input type="text" value={displayData.section8.step2.remainingBalance} readOnly className="w-full sm:w-auto" /></InfoRow>
+                                </InfoSectionCard>
+                               <InfoSectionCard icon="fa-bullseye" title="Step 3: Set Targets & Forecast">
+                                    <InfoRow label="T.P1:"><input type="number" value={data.section8.step3.tp1} onChange={(e) => handleNestedChange('section8.step3.tp1', parseFloat(e.target.value))} className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label="T.P2:"><input type="number" value={data.section8.step3.tp2} onChange={(e) => handleNestedChange('section8.step3.tp2', parseFloat(e.target.value))} className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label="Profit Potential (TP1):"><input type="text" value={displayData.section8.step3.profitPotential1} readOnly className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label="Risk/Reward Ratio:" onInfoClick={handleInfoClick} paramKey="RiskRewardRatio" indicator={getRiskRewardIndicator()}><input type="text" value={displayData.section8.step3.riskRewardRatio} readOnly className="w-full sm:w-auto" /></InfoRow>
+                                </InfoSectionCard>
+                               <InfoSectionCard icon="fa-check-double" title="Step 4: Close & Analyze Performance">
+                                    <InfoRow label="Close Date:"><input type="date" value={data.section8.step4.closeDate} onChange={(e) => handleNestedChange('section8.step4.closeDate', e.target.value)} className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label="Close Price:"><input type="number" value={data.section8.step4.closePrice} onChange={(e) => handleNestedChange('section8.step4.closePrice', parseFloat(e.target.value))} className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label="Fees:"><input type="number" value={data.section8.step4.fees} onChange={(e) => handleNestedChange('section8.step4.fees', parseFloat(e.target.value))} className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label="Financial Result:"><input type="text" value={displayData.section8.step4.financialResult} readOnly className="w-full sm:w-auto" /></InfoRow>
+                                    <InfoRow label="ROI (%):"><input type="text" value={displayData.section8.step4.roi} readOnly className="w-full sm:w-auto" /></InfoRow>
+                                </InfoSectionCard>
+                               <InfoSectionCard icon="fa-book-open" title="Step 5: Document & Learn">
+                                    <InfoRow label="Lessons Learned & Insights:"><textarea value={data.section8.step5.lessonsLearned} onChange={(e) => handleNestedChange('section8.step5.lessonsLearned', e.target.value)} className="w-full" /></InfoRow>
+                                </InfoSectionCard>
+                            </Section>
+                        </Tab>
+                        <Tab label="AI Center" icon="fa-robot">
+                            <AiAnalysis />
+                            <AiRiskAdvisor riskData={riskData} />
+                            <Section title="💡 Tactical AI Recommendations">
+                                <InfoSectionCard icon="fa-lightbulb">
+                                    {apiStatus.loading && <p className="text-gray-400">Loading recommendations...</p>}
+                                    {apiStatus.error && <p className="text-red-400">{apiStatus.error}</p>}
+                                    {!apiStatus.loading && !apiStatus.error && (
+                                        tacticalRecommendations.length > 0 ? (
+                                            <ul className="list-disc pl-5 space-y-2 text-gray-300">
+                                                {tacticalRecommendations.map((rec, index) => <li key={index}>{rec}</li>)}
+                                            </ul>
+                                        ) : (
+                                            <p className="text-gray-400">Enter more data to generate tactical recommendations.</p>
+                                        )
+                                    )}
+                                </InfoSectionCard>
+                            </Section>
+                        </Tab>
+                        <Tab label="System & Settings" icon="fa-cogs">
+                            <ControlPanel />
+                            <BITDashboard />
+                            <VersionManagementCenter />
+                            <DatabaseManager />
+                        </Tab>
+                    </Tabs>
+                    
+                    <footer className="w-full mt-10 pt-4 border-t border-gray-700 text-center text-xs text-gray-500">
+                        <p>Praxis AI Dashboard © 2025. All Rights Reserved.</p>
+                        <p className="mt-2">Disclaimer: This software is provided "AS IS" without warranty of any kind. The user assumes all risk associated with its use. In no event shall the creator be liable for any damages.</p>
+                    </footer>
+
+                </div>
+            );
+        };
+        
+        //======================================================================
+        //  8. RENDER THE APP
+        //======================================================================
+        
+        const root = createRoot(document.getElementById('root'));
+        root.render(
+            <DataProvider>
+                <FirebaseProvider>
+                    <App />
+                </FirebaseProvider>
+            </DataProvider>
+        ); 
+    </script>
+
+
+</body>
+
+</html>
+
